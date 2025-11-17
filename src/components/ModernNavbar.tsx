@@ -54,10 +54,11 @@ const i18n = {
 };
 
 interface ModernNavbarProps {
-  onLoginClick: () => void;
+  onLoginClick?: () => void;
+  onAdminClick?: () => void;
 }
 
-export default function ModernNavbar({ onLoginClick }: ModernNavbarProps) {
+export default function ModernNavbar({ onLoginClick, onAdminClick }: ModernNavbarProps) {
   const pathname = usePathname();
   const router = useRouter();
   const { user, logout, isAuthenticated, requireAuth } = useAuth();
@@ -65,9 +66,31 @@ export default function ModernNavbar({ onLoginClick }: ModernNavbarProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLanguageDropdownOpen, setIsLanguageDropdownOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [adminUser, setAdminUser] = useState<any>(null);
   
   const languageDropdownRef = useRef<HTMLDivElement>(null);
   const userDropdownRef = useRef<HTMLDivElement>(null);
+
+  // Check if admin is logged in
+  useEffect(() => {
+    const checkAdminStatus = () => {
+      const adminData = localStorage.getItem('adminUser');
+      if (adminData) {
+        setIsAdmin(true);
+        setAdminUser(JSON.parse(adminData));
+      } else {
+        setIsAdmin(false);
+        setAdminUser(null);
+      }
+    };
+    
+    checkAdminStatus();
+    
+    // Listen for storage changes
+    window.addEventListener('storage', checkAdminStatus);
+    return () => window.removeEventListener('storage', checkAdminStatus);
+  }, []);
 
   // Close dropdowns when clicking outside
   useEffect(() => {
@@ -106,12 +129,20 @@ export default function ModernNavbar({ onLoginClick }: ModernNavbarProps) {
     logout();
     setIsUserDropdownOpen(false);
     setIsMobileMenuOpen(false);
+    router.push('/');
   };
 
-  const handleAdminClick = () => {
-    router.push('/admin/login');
+  const handleAdminLogout = () => {
+    // Clear admin credentials
+    localStorage.removeItem('adminToken');
+    localStorage.removeItem('adminUser');
+    setIsAdmin(false);
+    setAdminUser(null);
     setIsUserDropdownOpen(false);
     setIsMobileMenuOpen(false);
+    
+    // Redirect to homepage
+    router.push('/');
   };
 
   const handleProfileClick = () => {
@@ -136,7 +167,16 @@ export default function ModernNavbar({ onLoginClick }: ModernNavbarProps) {
   };
 
   const handleLoginClick = () => {
-    onLoginClick();
+    if (onLoginClick) {
+      onLoginClick();
+    }
+    setIsMobileMenuOpen(false);
+  };
+
+  const handleAdminClick = () => {
+    if (onAdminClick) {
+      onAdminClick();
+    }
     setIsMobileMenuOpen(false);
   };
 
@@ -257,16 +297,22 @@ export default function ModernNavbar({ onLoginClick }: ModernNavbarProps) {
 
             {/* User Actions */}
             <div className="hidden lg:flex items-center space-x-4 flex-shrink-0">
-              {/* Admin Button */}
-              <button
-                onClick={handleAdminClick}
-                className="flex items-center px-4 py-3 rounded-2xl text-sm font-semibold transition-all duration-300 text-cyan-100 hover:bg-white hover:bg-opacity-10 hover:text-white"
-              >
-                <Shield className="w-5 h-5 mr-2" />
-                {i18n.t('nav_admin')}
-              </button>
-
-              {isAuthenticated ? (
+              {isAdmin ? (
+                /* Admin Logged In - Show Logout Button */
+                <div className="flex items-center space-x-3">
+                  <div className="flex items-center space-x-2 px-4 py-2 bg-red-500 bg-opacity-10 rounded-xl border border-red-500 border-opacity-30">
+                    <Shield className="w-5 h-5 text-red-400" />
+                    <span className="text-white font-medium">{adminUser?.name || 'Admin'}</span>
+                  </div>
+                  <button
+                    onClick={handleAdminLogout}
+                    className="flex items-center space-x-2 px-4 py-3 bg-red-500 bg-opacity-20 hover:bg-opacity-30 text-white rounded-xl transition-all duration-300 font-semibold"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span>Logout</span>
+                  </button>
+                </div>
+              ) : isAuthenticated ? (
                 /* User Dropdown */
                 <div className="relative" ref={userDropdownRef}>
                   <button
@@ -321,13 +367,22 @@ export default function ModernNavbar({ onLoginClick }: ModernNavbarProps) {
                   )}
                 </div>
               ) : (
-                /* Login Button */
-                <button
-                  onClick={handleLoginClick}
-                  className="text-cyan-100 hover:text-white px-6 py-3 rounded-2xl text-sm font-semibold transition-all duration-300 hover:bg-white hover:bg-opacity-10 whitespace-nowrap"
-                >
-                  {i18n.t('nav_login')}
-                </button>
+                /* Login Buttons */
+                <div className="flex items-center space-x-3">
+                  <button
+                    onClick={handleLoginClick}
+                    className="text-cyan-100 hover:text-white px-6 py-3 rounded-2xl text-sm font-semibold transition-all duration-300 hover:bg-white hover:bg-opacity-10 whitespace-nowrap"
+                  >
+                    {i18n.t('nav_login')}
+                  </button>
+                  <button
+                    onClick={handleAdminClick}
+                    className="text-red-100 hover:text-white px-4 py-3 rounded-2xl text-sm font-semibold transition-all duration-300 hover:bg-red-500 hover:bg-opacity-20 whitespace-nowrap flex items-center space-x-2"
+                  >
+                    <Shield className="w-4 h-4" />
+                    <span>Admin</span>
+                  </button>
+                </div>
               )}
             </div>
 
@@ -373,17 +428,27 @@ export default function ModernNavbar({ onLoginClick }: ModernNavbarProps) {
                   );
                 })}
                 
-                {/* Admin Button in Mobile Menu */}
-                <button
-                  onClick={handleAdminClick}
-                  className="flex items-center px-6 py-4 rounded-2xl text-sm font-semibold text-cyan-100 hover:bg-white hover:bg-opacity-10 transition-all duration-300"
-                >
-                  <Shield className="w-5 h-5 mr-3" />
-                  {i18n.t('nav_admin')}
-                </button>
-
                 <div className="pt-4 border-t border-cyan-500 border-opacity-30 space-y-3">
-                  {isAuthenticated ? (
+                  {isAdmin ? (
+                    /* Admin Logged In - Mobile View */
+                    <>
+                      <div className="px-6 py-3 bg-red-500 bg-opacity-10 rounded-2xl border border-red-500 border-opacity-30">
+                        <div className="flex items-center space-x-2 mb-1">
+                          <Shield className="w-4 h-4 text-red-400" />
+                          <p className="text-white font-semibold text-sm">Admin Access</p>
+                        </div>
+                        <p className="text-white font-semibold text-sm">{adminUser?.name}</p>
+                        <p className="text-red-200 text-xs">{adminUser?.email}</p>
+                      </div>
+                      <button
+                        onClick={handleAdminLogout}
+                        className="w-full flex items-center px-6 py-4 text-red-300 hover:bg-red-500 hover:bg-opacity-20 rounded-2xl transition-all duration-300 font-semibold"
+                      >
+                        <LogOut className="w-5 h-5 mr-3" />
+                        Admin Logout
+                      </button>
+                    </>
+                  ) : isAuthenticated ? (
                     <>
                       <div className="px-6 py-3 bg-white bg-opacity-10 rounded-2xl">
                         <p className="text-white font-semibold text-sm">{user?.name}</p>
@@ -405,12 +470,21 @@ export default function ModernNavbar({ onLoginClick }: ModernNavbarProps) {
                       </button>
                     </>
                   ) : (
-                    <button
-                      onClick={handleLoginClick}
-                      className="w-full text-center px-6 py-4 text-cyan-100 hover:bg-white hover:bg-opacity-10 rounded-2xl transition-all duration-300 font-semibold"
-                    >
-                      {i18n.t('nav_login')}
-                    </button>
+                    <>
+                      <button
+                        onClick={handleLoginClick}
+                        className="w-full text-center px-6 py-4 text-cyan-100 hover:bg-white hover:bg-opacity-10 rounded-2xl transition-all duration-300 font-semibold"
+                      >
+                        {i18n.t('nav_login')}
+                      </button>
+                      <button
+                        onClick={handleAdminClick}
+                        className="w-full flex items-center justify-center px-6 py-4 text-red-100 hover:bg-red-500 hover:bg-opacity-20 rounded-2xl transition-all duration-300 font-semibold"
+                      >
+                        <Shield className="w-5 h-5 mr-2" />
+                        Admin Login
+                      </button>
+                    </>
                   )}
                 </div>
               </div>

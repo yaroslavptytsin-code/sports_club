@@ -33,6 +33,7 @@ enum UserType {
   COACH
   TEAM_MANAGER
   CLUB_TRAINER
+  ADMIN
 }
 
 model CoachAthlete {

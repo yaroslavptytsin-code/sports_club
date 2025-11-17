@@ -28,12 +28,6 @@ export default function AdminDashboard() {
     setAdminUser(JSON.parse(adminData));
   }, [router]);
 
-  const handleLogout = () => {
-    localStorage.removeItem('adminToken');
-    localStorage.removeItem('adminUser');
-    router.push('/admin/login');
-  };
-
   if (!adminUser) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -69,13 +63,6 @@ export default function AdminDashboard() {
                 <p className="text-purple-100">Welcome back, {adminUser.name}</p>
               </div>
             </div>
-            <button
-              onClick={handleLogout}
-              className="flex items-center space-x-2 bg-white bg-opacity-20 hover:bg-opacity-30 px-4 py-2 rounded-xl transition-all duration-200 backdrop-blur-sm"
-            >
-              <LogOut className="w-4 h-4" />
-              <span>Logout</span>
-            </button>
           </div>
         </div>
       </div>

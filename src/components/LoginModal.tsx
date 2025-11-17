@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useRouter } from "next/navigation";
@@ -13,7 +13,7 @@ interface LoginModalProps {
 
 export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
     const [formData, setFormData] = useState({
-        email: '',
+        identifier: '', // Can be email or username
         password: '',
         userType: 'athlete' as 'athlete' | 'coach' | 'team' | 'club'
     });
@@ -21,6 +21,20 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
     const [error, setError] = useState('');
     const { login } = useAuth();
     const router = useRouter();
+
+    // Clear form when modal closes
+    useEffect(() => {
+        if (!isOpen) {
+            // Reset form data when modal is closed
+            setFormData({
+                identifier: '',
+                password: '',
+                userType: 'athlete'
+            });
+            setError('');
+            setIsLoading(false);
+        }
+    }, [isOpen]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -55,77 +69,85 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50 backdrop-blur-sm">
-            <div className="relative bg-white rounded-2xl shadow-2xl max-w-md w-full mx-auto">
-                {/* Close Button */}
-                <button
-                    onClick={onClose}
-                    className="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-600 transition-colors"
-                >
-                    <X className="w-6 h-6" />
-                </button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-60 backdrop-blur-md">
+            <div className="relative w-full max-w-md">
+                {/* Transparent Card with Glass Effect */}
+                <div className="bg-white bg-opacity-10 backdrop-blur-xl rounded-3xl shadow-2xl border border-cyan-500 border-opacity-30 p-8">
+                    {/* Close Button */}
+                    <button
+                        onClick={onClose}
+                        className="absolute top-4 right-4 p-2 text-white hover:text-cyan-200 transition-colors"
+                    >
+                        <X className="w-6 h-6" />
+                    </button>
 
-                {/* Modal Content */}
-                <div className="p-8">
+                    {/* Modal Content */}
                     <div className="text-center mb-8">
-                        <h2 className="text-3xl font-bold text-gray-900 mb-2">
+                        <h2 className="text-3xl font-bold text-white mb-2">
                             Welcome Back
                         </h2>
-                        <p className="text-gray-600">
+                        <p className="text-cyan-100">
                             Sign in to access your account
                         </p>
                     </div>
 
                     {error && (
-                        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
+                        <div className="bg-red-500 bg-opacity-20 backdrop-blur-sm border border-red-400 border-opacity-30 text-red-200 px-4 py-3 rounded-xl mb-6">
                             {error}
                         </div>
                     )}
 
-                    <form onSubmit={handleSubmit} className="space-y-6">
+                    <form onSubmit={handleSubmit} className="space-y-6" autoComplete="off" key={isOpen ? 'open' : 'closed'}>
                         <div>
-                            <label htmlFor="user-type" className="block text-sm font-medium text-gray-700 mb-2">
+                            <label htmlFor="user-type" className="block text-sm font-medium text-white mb-2">
                                 I am a:
                             </label>
                             <select
                                 id="user-type"
                                 value={formData.userType}
                                 onChange={(e) => setFormData({ ...formData, userType: e.target.value as any })}
-                                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                className="w-full px-4 py-3 bg-white bg-opacity-10 backdrop-blur-sm border border-cyan-500 border-opacity-30 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent transition-all duration-200"
                             >
-                                <option value="athlete">Athlete</option>
-                                <option value="coach">Coach</option>
-                                <option value="team">Team Manager</option>
-                                <option value="club">Club Trainer</option>
+                                <option value="athlete" className="text-gray-800">Athlete</option>
+                                <option value="coach" className="text-gray-800">Coach</option>
+                                <option value="team" className="text-gray-800">Team Manager</option>
+                                <option value="club" className="text-gray-800">Club Trainer</option>
                             </select>
                         </div>
 
                         <div>
-                            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                                Email Address
+                            <label htmlFor="user-identifier" className="block text-sm font-medium text-white mb-2">
+                                Email or Username
                             </label>
                             <input
-                                type="email"
-                                id="email"
+                                type="text"
+                                id="user-identifier"
+                                name="user-login-identifier"
+                                autoComplete="new-password"
+                                autoCorrect="off"
+                                autoCapitalize="off"
+                                spellCheck="false"
                                 required
-                                value={formData.email}
-                                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                placeholder="Enter your email"
+                                value={formData.identifier}
+                                onChange={(e) => setFormData({ ...formData, identifier: e.target.value })}
+                                className="w-full px-4 py-3 bg-white bg-opacity-10 backdrop-blur-sm border border-cyan-500 border-opacity-30 rounded-xl text-white placeholder-cyan-200 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent transition-all duration-200"
+                                placeholder="Enter your email or username"
                             />
                         </div>
 
                         <div>
-                            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+                            <label htmlFor="user-password" className="block text-sm font-medium text-white mb-2">
                                 Password
                             </label>
                             <input
                                 type="password"
-                                id="password"
+                                id="user-password"
+                                name="user-login-password"
+                                autoComplete="new-password"
                                 required
                                 value={formData.password}
                                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                className="w-full px-4 py-3 bg-white bg-opacity-10 backdrop-blur-sm border border-cyan-500 border-opacity-30 rounded-xl text-white placeholder-cyan-200 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent transition-all duration-200"
                                 placeholder="Enter your password"
                             />
                         </div>
@@ -133,27 +155,37 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white py-4 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-full py-4 px-6 bg-gradient-to-r from-cyan-500 to-purple-500 text-white font-semibold rounded-xl hover:from-cyan-600 hover:to-purple-600 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 shadow-2xl"
                         >
-                            {isLoading ? 'Signing in...' : 'Sign In'}
+                            {isLoading ? (
+                                <div className="flex items-center justify-center">
+                                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                                    Signing in...
+                                </div>
+                            ) : (
+                                'Sign In'
+                            )}
                         </button>
                     </form>
 
                     <div className="mt-6 text-center">
-                        <p className="text-gray-600 text-sm">
+                        <p className="text-cyan-200 text-sm">
                             Don't have an account?{' '}
                             <button
                                 onClick={() => {
                                     onClose();
-                                    router.push("/register"); // ⬅️ Redirects to /register page
+                                    router.push("/register");
                                 }}
-                                className="text-blue-600 font-semibold hover:text-blue-700"
+                                className="text-white font-semibold hover:text-cyan-200 transition-colors underline"
                             >
-                                Contact us to register
+                                Sign up here
                             </button>
                         </p>
                     </div>
                 </div>
+
+                {/* Decorative Glow Effect */}
+                <div className="absolute -inset-4 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-3xl blur-xl opacity-20 -z-10"></div>
             </div>
         </div>
     );

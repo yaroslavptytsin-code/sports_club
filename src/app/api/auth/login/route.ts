@@ -1,24 +1,32 @@
 import { NextRequest, NextResponse } from 'next/server';
-import bcrypt from 'bcryptjs';
 import { PrismaClient, UserType } from '@prisma/client';
+import { verifyPassword, generateToken, hashPassword } from '@/lib/auth';
 
 const prisma = new PrismaClient();
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, password, userType } = await request.json();
+    const { email, username, identifier, password, userType } = await request.json();
+
+    // Support both email/username separately or combined in identifier field
+    const loginIdentifier = identifier || email || username;
 
     // Validate required fields
-    if (!email || !password) {
+    if (!loginIdentifier || !password) {
       return NextResponse.json(
-        { error: 'Email and password are required' },
+        { error: 'Email/Username and password are required' },
         { status: 400 }
       );
     }
 
-    // Find user
-    const user = await prisma.user.findUnique({
-      where: { email },
+    // Find user by email OR username
+    const user = await prisma.user.findFirst({
+      where: {
+        OR: [
+          { email: loginIdentifier },
+          { username: loginIdentifier }
+        ]
+      },
       select: {
         id: true,
         name: true,
@@ -32,18 +40,28 @@ export async function POST(request: NextRequest) {
 
     if (!user) {
       return NextResponse.json(
-        { error: 'Invalid email or password' },
+        { error: 'Invalid email/username or password' },
         { status: 401 }
       );
     }
 
-    // Verify password
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    // Verify password (supports both SHA1 from old system and bcrypt from new system)
+    const isPasswordValid = await verifyPassword(password, user.password);
     if (!isPasswordValid) {
       return NextResponse.json(
-        { error: 'Invalid email or password' },
+        { error: 'Invalid email/username or password' },
         { status: 401 }
       );
+    }
+
+    // If user is using old SHA1 password, upgrade to bcrypt
+    if (user.password.length === 40 && /^[a-f0-9]+$/i.test(user.password)) {
+      const newHashedPassword = await hashPassword(password);
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { password: newHashedPassword }
+      });
+      console.log(`Upgraded password for user ${user.email} from SHA1 to bcrypt`);
     }
 
     // Check user type if specified
@@ -60,8 +78,13 @@ export async function POST(request: NextRequest) {
     // Remove password from response
     const { password: _, ...userWithoutPassword } = user;
 
-    // Generate token
-    const token = generateMockToken(user.id);
+    // Generate JWT token with RSA signing
+    const token = generateToken(
+      user.id,
+      user.email,
+      user.username,
+      user.userType
+    );
 
     return NextResponse.json({
       success: true,
@@ -88,8 +111,4 @@ function mapUserType(frontendType: string): UserType {
   };
   
   return typeMap[frontendType] || UserType.ATHLETE;
-}
-
-function generateMockToken(userId: string): string {
-  return `mock-jwt-token-${userId}-${Date.now()}`;
 }

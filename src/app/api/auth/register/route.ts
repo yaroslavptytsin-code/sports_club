@@ -147,8 +147,13 @@ export async function POST(request: NextRequest) {
 
     console.log('Default sections created');
 
-    // Generate token
-    const token = generateMockToken(user.id);
+    // Generate JWT token with RSA signing
+    const token = require('@/lib/auth').generateToken(
+      user.id,
+      user.email,
+      user.username,
+      user.userType
+    );
 
     return NextResponse.json({
       success: true,
@@ -181,8 +186,4 @@ function mapUserType(frontendType: string): UserType {
   };
   
   return typeMap[frontendType] || UserType.ATHLETE;
-}
-
-function generateMockToken(userId: string): string {
-  return `mock-jwt-token-${userId}-${Date.now()}`;
 }

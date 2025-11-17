@@ -4,6 +4,7 @@ import { useState } from 'react';
 import ModernNavbar from '@/components/ModernNavbar';
 import ModernFooter from '@/components/ModernFooter';
 import LoginModal from '@/components/LoginModal';
+import AdminLoginModal from '@/components/AdminLoginModal';
 import { useAuth } from '@/hooks/useAuth';
 import { useEffect } from 'react';
 
@@ -202,10 +203,26 @@ function getFeaturesForUserType(userType: string) {
 export default function HomePage() {
   const [userType, setUserType] = useState<'athlete' | 'coach' | 'team' | 'club'>('athlete');
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showAdminModal, setShowAdminModal] = useState(false);
   const { requireAuth } = useAuth();
+
+  // Check URL parameters for login/admin modals
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('showLogin') === 'true') {
+      setShowLoginModal(true);
+    }
+    if (params.get('showAdmin') === 'true') {
+      setShowAdminModal(true);
+    }
+  }, []);
 
   const handleLoginClick = () => {
     setShowLoginModal(true);
+  };
+
+  const handleAdminClick = () => {
+    setShowAdminModal(true);
   };
 
   const handleProtectedLinkClick = (href: string) => {
@@ -217,12 +234,22 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <ModernNavbar onLoginClick={handleLoginClick} />
+      <ModernNavbar 
+        onLoginClick={handleLoginClick}
+        onAdminClick={handleAdminClick}
+      />
       
       {/* Login Modal */}
       <LoginModal 
         isOpen={showLoginModal}
         onClose={() => setShowLoginModal(false)}
+      />
+
+      {/* Admin Login Modal */}
+      <AdminLoginModal 
+        isOpen={showAdminModal}
+        onClose={() => setShowAdminModal(false)}
+        onSwitchToUserLogin={() => setShowLoginModal(true)}
       />
 
       {/* Hero Section */}
@@ -272,7 +299,10 @@ export default function HomePage() {
                 {getFeaturesForUserType(userType).map((feature, index) => (
                   <div key={index} className="bg-white bg-opacity-10 backdrop-blur-xl p-8 rounded-2xl shadow-2xl border border-white border-opacity-20 hover:bg-opacity-20 transition-all duration-500 hover:scale-105">
                     <div className="w-20 h-20 bg-blue-500 bg-opacity-60 rounded-2xl flex items-center justify-center mb-6 mx-auto">
-                      <feature.icon className="w-10 h-10 text-white" />
+                      {(() => {
+                        const Icon = feature.icon;
+                        return <Icon className="w-10 h-10 text-white" />;
+                      })()}
                     </div>
                     <h3 className="text-2xl font-bold text-white mb-4 text-center">
                       {feature.title}
