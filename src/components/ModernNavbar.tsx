@@ -176,14 +176,8 @@ export default function ModernNavbar({ onLoginClick, onAdminClick }: ModernNavba
   };
 
   const handleProtectedLinkClick = (href: string, event: React.MouseEvent) => {
-    const menuItem = menuItems.find(item => item.href === href);
-    
-    if (menuItem?.protected && !isAuthenticated) {
-      event.preventDefault();
-      event.stopPropagation();
-      onLoginClick();
-      setIsMobileMenuOpen(false);
-    }
+    // All navigation items are now public - no protection needed
+    setIsMobileMenuOpen(false);
   };
 
   const handleLoginClick = () => {
@@ -344,8 +338,6 @@ export default function ModernNavbar({ onLoginClick, onAdminClick }: ModernNavba
                       className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 transform hover:scale-105 whitespace-nowrap ${
                         isActive
                           ? 'bg-gradient-to-r from-cyan-500 to-purple-500 text-white shadow-2xl'
-                          : item.protected && !isAuthenticated
-                          ? 'text-cyan-100 opacity-70 cursor-not-allowed'
                           : 'text-cyan-100 hover:bg-white hover:bg-opacity-10 hover:text-white'
                       } ${isHome ? 'mr-8' : ''}`}
                     >
@@ -477,8 +469,6 @@ export default function ModernNavbar({ onLoginClick, onAdminClick }: ModernNavba
                       className={`text-center px-6 py-4 rounded-2xl text-sm font-semibold transition-all duration-300 ${
                         isActive
                           ? 'bg-gradient-to-r from-cyan-500 to-purple-500 text-white shadow-2xl'
-                          : item.protected && !isAuthenticated
-                          ? 'text-cyan-100 opacity-70 cursor-not-allowed'
                           : 'text-cyan-100 hover:bg-white hover:bg-opacity-10'
                       }`}
                     >
