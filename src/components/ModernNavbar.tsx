@@ -208,7 +208,7 @@ export default function ModernNavbar({ onLoginClick, onAdminClick }: ModernNavba
           {/* Top Bar with Contact Info & Language */}
           <div className="flex justify-between items-center py-3 border-b border-cyan-500 border-opacity-30">
             {/* Contact Information */}
-            <div className="flex items-center space-x-6 text-sm text-cyan-100">
+            <div className="flex items-center space-x-6 text-cyan-100">
               <div className="flex items-center space-x-2">
                 <Phone className="w-4 h-4" />
                 <span className="font-medium">+1 (555) 123-4567</span>

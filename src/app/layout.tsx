@@ -5,8 +5,13 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Workout Management System',
+  title: 'Movesbook - Workout Management System',
   description: 'Professional workout planning and tracking platform',
+  icons: {
+    icon: '/sidelogo.png',
+    shortcut: '/sidelogo.png',
+    apple: '/sidelogo.png',
+  },
 };
 
 export default function RootLayout({
