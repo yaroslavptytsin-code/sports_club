@@ -2,14 +2,12 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { 
   Home, 
   User, 
   Users, 
-  Calendar, 
-  BarChart3, 
-  Settings,
   Phone,
   Mail,
   Facebook,
@@ -22,7 +20,17 @@ import {
   Dumbbell,
   LogOut,
   User as UserIcon,
-  Shield
+  Shield,
+  Trophy,
+  Briefcase,
+  UserCircle,
+  Users2,
+  Building2,
+  MessageCircle,
+  Newspaper,
+  ShoppingCart,
+  Megaphone,
+  ShoppingBag
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 
@@ -31,11 +39,17 @@ const i18n = {
   t: (key: string) => {
     const translations: { [key: string]: string } = {
       'nav_home': 'Home',
-      'nav_my_page': 'My Page',
-      'nav_my_club': 'My Club',
-      'nav_workouts': 'Workouts',
-      'nav_analytics': 'Analytics',
-      'nav_settings': 'Settings',
+      'nav_athletes': 'Athletes',
+      'nav_coaches': 'Coaches',
+      'nav_teams': 'Teams',
+      'nav_groups': 'Groups',
+      'nav_sport_clubs': 'Sport Clubs',
+      'nav_testimonials': 'Testimonials',
+      'nav_news': 'News',
+      'nav_sell_buy': 'Sell-Buy',
+      'nav_job_offers': 'Job Offers',
+      'nav_promote_yourself': 'Promote Yourself',
+      'nav_our_shop': 'Our Shop',
       'nav_login': 'Login',
       'nav_get_started': 'Get Started',
       'nav_admin': 'Admin',
@@ -109,11 +123,17 @@ export default function ModernNavbar({ onLoginClick, onAdminClick }: ModernNavba
 
   const menuItems = [
     { href: '/', label: i18n.t('nav_home'), icon: Home },
-    { href: '/my-page', label: i18n.t('nav_my_page'), icon: User, protected: true },
-    { href: '/my-club', label: i18n.t('nav_my_club'), icon: Users, protected: true },
-    { href: '/workouts', label: i18n.t('nav_workouts'), icon: Calendar, protected: true },
-    { href: '/analytics', label: i18n.t('nav_analytics'), icon: BarChart3, protected: true },
-    { href: '/settings', label: i18n.t('nav_settings'), icon: Settings, protected: true },
+    { href: '/athletes', label: i18n.t('nav_athletes'), icon: Trophy },
+    { href: '/coaches', label: i18n.t('nav_coaches'), icon: UserCircle },
+    { href: '/teams', label: i18n.t('nav_teams'), icon: Users2 },
+    { href: '/groups', label: i18n.t('nav_groups'), icon: Users },
+    { href: '/sport-clubs', label: i18n.t('nav_sport_clubs'), icon: Building2 },
+    { href: '/testimonials', label: i18n.t('nav_testimonials'), icon: MessageCircle },
+    { href: '/news', label: i18n.t('nav_news'), icon: Newspaper },
+    { href: '/sell-buy', label: i18n.t('nav_sell_buy'), icon: ShoppingCart },
+    { href: '/job-offers', label: i18n.t('nav_job_offers'), icon: Briefcase },
+    { href: '/promote-yourself', label: i18n.t('nav_promote_yourself'), icon: Megaphone },
+    { href: '/our-shop', label: i18n.t('nav_our_shop'), icon: ShoppingBag },
   ];
 
   const socialLinks = [
@@ -199,6 +219,41 @@ export default function ModernNavbar({ onLoginClick, onAdminClick }: ModernNavba
               </div>
             </div>
 
+            {/* Top Navigation Links - Left and Right Groups */}
+            <div className="hidden xl:flex items-center flex-1 justify-between mx-8  text-cyan-100">
+              {/* Left Group */}
+              <div className="flex items-center gap-6">
+                <Link href="/why-movesbook" className="hover:text-white transition-colors duration-200 font-semibold whitespace-nowrap px-2 py-1">
+                  Why Movesbook?
+                </Link>
+                <Link href="/dealers" className="hover:text-white transition-colors duration-200 font-semibold whitespace-nowrap px-2 py-1">
+                  Dealers
+                </Link>
+                <Link href="/subscribe-newsletter" className="hover:text-white transition-colors duration-200 font-semibold whitespace-nowrap px-2 py-1">
+                  Subscribe Newsletter
+                </Link>
+                <Link href="/references" className="hover:text-white transition-colors duration-200 font-semibold whitespace-nowrap px-2 py-1">
+                  References
+                </Link>
+                <Link href="/about-us" className="hover:text-white transition-colors duration-200 font-semibold whitespace-nowrap px-2 py-1">
+                  About us
+                </Link>
+              </div>
+
+              {/* Right Group */}
+              <div className="flex items-center gap-6">
+                <Link href="/support" className="hover:text-white transition-colors duration-200 font-semibold whitespace-nowrap px-2 py-1">
+                  Support
+                </Link>
+                <Link href="/forum" className="hover:text-white transition-colors duration-200 font-semibold whitespace-nowrap px-2 py-1">
+                  Forum
+                </Link>
+                <Link href="/blog" className="hover:text-white transition-colors duration-200 font-semibold whitespace-nowrap px-2 py-1">
+                  Blog
+                </Link>
+              </div>
+            </div>
+
             {/* Language & Social */}
             <div className="flex items-center space-x-4">
               {/* Language Selector */}
@@ -255,8 +310,15 @@ export default function ModernNavbar({ onLoginClick, onAdminClick }: ModernNavba
             {/* Logo */}
             <div className="flex items-center space-x-4 flex-shrink-0">
               <div className="relative">
-                <div className="w-12 h-12 bg-gradient-to-br from-cyan-400 to-purple-500 rounded-2xl flex items-center justify-center shadow-2xl">
-                  <Dumbbell className="w-6 h-6 text-white" />
+                <div className="w-16 h-16 flex items-center justify-center">
+                  <Image
+                    src="/sidelogo.png"
+                    alt="Movesbook Logo"
+                    width={64}
+                    height={64}
+                    className="object-contain scale-x-[-1]"
+                    priority
+                  />
                 </div>
               </div>
               <div>
@@ -268,27 +330,26 @@ export default function ModernNavbar({ onLoginClick, onAdminClick }: ModernNavba
             </div>
 
             {/* Desktop Menu */}
-            <div className="hidden lg:flex items-center justify-center flex-1 mx-8">
-              <div className="flex items-center space-x-1 w-full max-w-4xl justify-center">
-                {menuItems.map((item) => {
-                  const Icon = item.icon;
+            <div className="hidden lg:flex items-center justify-center flex-1 mx-4">
+              <div className="flex items-center gap-2 w-full justify-center overflow-x-auto">
+                {menuItems.map((item, index) => {
                   const isActive = pathname === item.href;
+                  const isHome = item.href === '/';
                   
                   return (
                     <Link
                       key={item.href}
                       href={item.href}
                       onClick={(e) => handleProtectedLinkClick(item.href, e)}
-                      className={`flex items-center px-6 py-3 rounded-2xl text-sm font-semibold transition-all duration-300 transform hover:scale-105 flex-1 justify-center min-w-0 ${
+                      className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 transform hover:scale-105 whitespace-nowrap ${
                         isActive
                           ? 'bg-gradient-to-r from-cyan-500 to-purple-500 text-white shadow-2xl'
                           : item.protected && !isAuthenticated
                           ? 'text-cyan-100 opacity-70 cursor-not-allowed'
                           : 'text-cyan-100 hover:bg-white hover:bg-opacity-10 hover:text-white'
-                      }`}
+                      } ${isHome ? 'mr-8' : ''}`}
                     >
-                      <Icon className="w-5 h-5 mr-2 flex-shrink-0" />
-                      <span className="truncate">{item.label}</span>
+                      {item.label}
                     </Link>
                   );
                 })}
@@ -406,7 +467,6 @@ export default function ModernNavbar({ onLoginClick, onAdminClick }: ModernNavba
             <div className="lg:hidden py-6 border-t border-cyan-500 border-opacity-30">
               <div className="flex flex-col space-y-3">
                 {menuItems.map((item) => {
-                  const Icon = item.icon;
                   const isActive = pathname === item.href;
                   
                   return (
@@ -414,7 +474,7 @@ export default function ModernNavbar({ onLoginClick, onAdminClick }: ModernNavba
                       key={item.href}
                       href={item.href}
                       onClick={(e) => handleProtectedLinkClick(item.href, e)}
-                      className={`flex items-center px-6 py-4 rounded-2xl text-sm font-semibold transition-all duration-300 ${
+                      className={`text-center px-6 py-4 rounded-2xl text-sm font-semibold transition-all duration-300 ${
                         isActive
                           ? 'bg-gradient-to-r from-cyan-500 to-purple-500 text-white shadow-2xl'
                           : item.protected && !isAuthenticated
@@ -422,8 +482,7 @@ export default function ModernNavbar({ onLoginClick, onAdminClick }: ModernNavba
                           : 'text-cyan-100 hover:bg-white hover:bg-opacity-10'
                       }`}
                     >
-                      <Icon className="w-5 h-5 mr-3 flex-shrink-0" />
-                      <span>{item.label}</span>
+                      {item.label}
                     </Link>
                   );
                 })}

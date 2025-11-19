@@ -183,6 +183,18 @@ function getFeaturesForUserType(userType: string) {
         description: 'Set and track team objectives with collective workout plans and comprehensive performance metrics. Analyze team progress and celebrate achievements together.'
       }
     ],
+    group: [
+      {
+        icon: FeatureIcons.Users,
+        title: 'Group Activity Management',
+        description: 'Organize and manage group fitness activities with ease. Coordinate schedules, track participation, and create a collaborative training environment for all members.'
+      },
+      {
+        icon: FeatureIcons.Calendar,
+        title: 'Shared Workout Plans',
+        description: 'Create and share workout plans within your group. Foster motivation through collective goals and shared progress tracking with real-time updates.'
+      }
+    ],
     club: [
       {
         icon: FeatureIcons.Users,
@@ -201,7 +213,7 @@ function getFeaturesForUserType(userType: string) {
 }
 
 export default function HomePage() {
-  const [userType, setUserType] = useState<'athlete' | 'coach' | 'team' | 'club'>('athlete');
+  const [userType, setUserType] = useState<'athlete' | 'coach' | 'team' | 'group' | 'club'>('athlete');
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showAdminModal, setShowAdminModal] = useState(false);
   const { requireAuth } = useAuth();
@@ -278,6 +290,7 @@ export default function HomePage() {
                   { id: 'athlete' as const, label: 'Athlete' },
                   { id: 'coach' as const, label: 'Coach' },
                   { id: 'team' as const, label: 'Team' },
+                  { id: 'group' as const, label: 'Group' },
                   { id: 'club' as const, label: 'Club' }
                 ].map((type) => (
                   <button

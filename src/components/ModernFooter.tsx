@@ -61,10 +61,10 @@ export default function ModernFooter() {
   return (
     <footer className="bg-gradient-to-br from-gray-900 to-gray-800 text-white">
       {/* Main Footer Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
+      <div className="w-full px-4 sm:px-6 lg:px-8 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 max-w-full">
           {/* Company Info */}
-          <div className="lg:col-span-2">
+          <div>
             <div className="flex items-center mb-6">
               <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
                 <span className="text-white font-bold text-xl">W</span>
@@ -117,6 +117,25 @@ export default function ModernFooter() {
               </ul>
             </div>
           ))}
+
+          {/* Sponsors Video Box */}
+          <div>
+            <h4 className="text-lg font-semibold mb-6 text-white">
+              Video of sponsors here
+            </h4>
+            <div className="bg-gray-800 rounded-xl overflow-hidden aspect-video">
+              <video
+                className="w-full h-full object-cover"
+                controls
+                loop
+                muted
+                poster="/images/sponsor-poster.jpg"
+              >
+                <source src="/videos/sponsors.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          </div>
         </div>
 
         {/* Newsletter Section */}
