@@ -21,9 +21,23 @@ model User {
   periods      Period[]
   sections     WorkoutSection[]
   settings     UserSettings?
+  mainSports   UserMainSport[]
+
+  // Legacy coach-athlete relationship (keeping for backward compatibility)
   athletes     CoachAthlete[] @relation("CoachAthletes")
   coaches      CoachAthlete[] @relation("AthleteCoaches")
-  mainSports   UserMainSport[]
+
+  // New organizational structure - Admin/Owner relationships
+  ownedCoachingGroups CoachingGroup[] @relation("CoachingGroupOwner")
+  ownedTeams          Team[]          @relation("TeamOwner")
+  ownedClubs          Club[]          @relation("ClubOwner")
+  ownedGroups         Group[]         @relation("GroupOwner")
+
+  // Membership relationships (user belongs to these entities)
+  coachingGroupMemberships CoachingGroupMember[]
+  teamMemberships          TeamMember[]
+  clubMemberships          ClubMember[]
+  groupMemberships         GroupMember[]
 
   @@map("users")
 }
@@ -33,6 +47,7 @@ enum UserType {
   COACH
   TEAM_MANAGER
   CLUB_TRAINER
+  GROUP_ADMIN
   ADMIN
 }
 
@@ -274,4 +289,131 @@ model UserMainSport {
 
   @@unique([userId, sport])
   @@map("user_main_sports")
+}
+
+// ===== NEW ORGANIZATIONAL STRUCTURE MODELS =====
+
+// CoachingGroup: A coach can have multiple coaching groups
+model CoachingGroup {
+  id          String   @id @default(cuid())
+  coachId     String
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  coach   User                    @relation("CoachingGroupOwner", fields: [coachId], references: [id], onDelete: Cascade)
+  members CoachingGroupMember[]
+
+  @@map("coaching_groups")
+}
+
+// Junction table: Athletes in coaching groups
+model CoachingGroupMember {
+  id               String   @id @default(cuid())
+  coachingGroupId  String
+  athleteId        String
+  role             String?  // e.g., "athlete", "assistant"
+  joinedAt         DateTime @default(now())
+
+  coachingGroup CoachingGroup @relation(fields: [coachingGroupId], references: [id], onDelete: Cascade)
+  athlete       User          @relation(fields: [athleteId], references: [id], onDelete: Cascade)
+
+  @@unique([coachingGroupId, athleteId])
+  @@map("coaching_group_members")
+}
+
+// Team: A team admin can manage multiple teams
+model Team {
+  id          String   @id @default(cuid())
+  adminId     String
+  name        String
+  description String?
+  sport       String?  // Primary sport for this team
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  admin   User         @relation("TeamOwner", fields: [adminId], references: [id], onDelete: Cascade)
+  members TeamMember[]
+
+  @@map("teams")
+}
+
+// Junction table: Athletes in teams
+model TeamMember {
+  id        String   @id @default(cuid())
+  teamId    String
+  athleteId String
+  role      String?  // e.g., "captain", "player", "reserve"
+  jerseyNumber Int?
+  joinedAt  DateTime @default(now())
+
+  team    Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  athlete User @relation(fields: [athleteId], references: [id], onDelete: Cascade)
+
+  @@unique([teamId, athleteId])
+  @@map("team_members")
+}
+
+// Club: A club admin can manage multiple clubs
+model Club {
+  id          String   @id @default(cuid())
+  adminId     String
+  name        String
+  description String?
+  location    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  admin   User         @relation("ClubOwner", fields: [adminId], references: [id], onDelete: Cascade)
+  members ClubMember[]
+
+  @@map("clubs")
+}
+
+// Junction table: Members in clubs
+model ClubMember {
+  id         String   @id @default(cuid())
+  clubId     String
+  memberId   String
+  role       String?  // e.g., "member", "trainer", "staff"
+  membershipType String? // e.g., "monthly", "annual"
+  joinedAt   DateTime @default(now())
+
+  club   Club @relation(fields: [clubId], references: [id], onDelete: Cascade)
+  member User @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@unique([clubId, memberId])
+  @@map("club_members")
+}
+
+// Group: A group admin can manage multiple groups
+model Group {
+  id          String   @id @default(cuid())
+  adminId     String
+  name        String
+  description String?
+  groupType   String?  // e.g., "fitness", "social", "competitive"
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  admin   User          @relation("GroupOwner", fields: [adminId], references: [id], onDelete: Cascade)
+  members GroupMember[]
+
+  @@map("groups")
+}
+
+// Junction table: Users in groups
+model GroupMember {
+  id       String   @id @default(cuid())
+  groupId  String
+  userId   String
+  role     String?  // e.g., "member", "moderator"
+  joinedAt DateTime @default(now())
+
+  group Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([groupId, userId])
+  @@map("group_members")
 }

@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowLeft } from 'lucide-react';
-import { useAuth } from '@/hooks/useAuth';
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -18,8 +17,8 @@ export default function RegisterPage() {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState(false);
   const router = useRouter();
-  const { login } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,11 +53,13 @@ export default function RegisterPage() {
         throw new Error(data.error || 'Registration failed');
       }
 
-      // Store token and user data
-      login(data.token, data.user);
+      // Show success message
+      setSuccess(true);
       
-      // Redirect to homepage with auth success parameter
-      router.push('/?fromAuth=true');
+      // Redirect to login modal after 2 seconds
+      setTimeout(() => {
+        router.push('/?showLogin=true');
+      }, 2000);
 
     } catch (error: any) {
       setError(error.message);
@@ -112,6 +113,12 @@ export default function RegisterPage() {
           {error && (
             <div className="bg-red-500 bg-opacity-20 backdrop-blur-sm border border-red-400 border-opacity-30 text-red-200 px-4 py-3 rounded-xl mb-6">
               {error}
+            </div>
+          )}
+
+          {success && (
+            <div className="bg-green-500 bg-opacity-20 backdrop-blur-sm border border-green-400 border-opacity-30 text-green-200 px-4 py-3 rounded-xl mb-6">
+              ✅ Registration successful! Redirecting to login...
             </div>
           )}
 

@@ -311,6 +311,7 @@ export default function ModernNavbar({ onLoginClick, onAdminClick }: ModernNavba
                     width={64}
                     height={64}
                     className="object-contain scale-x-[-1]"
+                    style={{ width: 'auto', height: 'auto', maxWidth: '64px', maxHeight: '64px' }}
                     priority
                   />
                 </div>

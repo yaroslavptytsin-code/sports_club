@@ -12,24 +12,24 @@ import {
   CheckCircle
 } from 'lucide-react';
 import AdvertisementCarousel from '@/components/AdvertisementCarousel';
-import TransitionMenuBar from '@/components/TransitionMenuBar';
+import ModernNavbar from '@/components/ModernNavbar';
 
 export default function MyPage() {
   const [activeSection, setActiveSection] = useState<'workouts' | 'progress' | 'settings'>('workouts');
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      {/* Transition Menu Bar */}
-      <TransitionMenuBar />
+      {/* Modern Navbar */}
+      <ModernNavbar />
 
-      <div className="flex-1 flex flex-col max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6">
+      <div className="flex-1 flex flex-col w-full py-6">
         {/* Advertisement Carousel - Top Section */}
-        <div className="mb-6 flex-shrink-0">
+        <div className="mb-6 flex-shrink-0 px-4">
           <AdvertisementCarousel />
         </div>
 
         {/* Main Content Area - Fills remaining space */}
-        <div className="flex-1 flex gap-6 min-h-0">
+        <div className="flex-1 flex gap-6 min-h-0 px-4">
           {/* Left Sidebar */}
           <div className="w-64 flex-shrink-0">
             <div className="bg-white rounded-lg shadow-sm border p-4 h-full flex flex-col">

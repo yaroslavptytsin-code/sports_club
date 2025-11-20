@@ -46,10 +46,20 @@ export function useAuth() {
     setUser(userData);
     setShowLoginModal(false);
     
-    // Redirect if there was a pending redirect
-    if (redirectAfterLogin) {
-      router.push(redirectAfterLogin);
-      setRedirectAfterLogin(null);
+    // Redirect based on user type
+    if (userData.userType === 'ADMIN') {
+      // Admin users stay on current site or redirect to admin dashboard
+      if (redirectAfterLogin) {
+        router.push(redirectAfterLogin);
+        setRedirectAfterLogin(null);
+      } else {
+        router.push('/admin/dashboard');
+      }
+    } else {
+      // All non-admin users redirect to my-page
+      // For local testing: use local /my-page
+      // For production: use https://movesbook.com/my-page
+      router.push('/my-page');
     }
   };
 
