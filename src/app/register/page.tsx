@@ -13,7 +13,7 @@ export default function RegisterPage() {
     email: '',
     password: '',
     confirmPassword: '',
-    userType: 'athlete' as 'athlete' | 'coach' | 'team' | 'club'
+    userType: 'athlete' as 'athlete' | 'coach' | 'team' | 'club' | 'group'
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -140,6 +140,7 @@ export default function RegisterPage() {
                   <option value="coach" className="text-gray-800">Coach</option>
                   <option value="team" className="text-gray-800">Team Manager</option>
                   <option value="club" className="text-gray-800">Club Trainer</option>
+                  <option value="group" className="text-gray-800">Group</option>
                 </select>
               </div>
 

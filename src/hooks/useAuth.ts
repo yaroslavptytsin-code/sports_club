@@ -46,19 +46,32 @@ export function useAuth() {
     setUser(userData);
     setShowLoginModal(false);
     
-    // Redirect based on user type
+    // Redirect based on user type to category-specific dashboards
     if (userData.userType === 'ADMIN') {
-      // Admin users stay on current site or redirect to admin dashboard
+      // Admin users redirect to admin dashboard
       if (redirectAfterLogin) {
         router.push(redirectAfterLogin);
         setRedirectAfterLogin(null);
       } else {
         router.push('/admin/dashboard');
       }
+    } else if (userData.userType === 'ATHLETE') {
+      // Athletes redirect to athlete dashboard
+      router.push('/athlete/dashboard');
+    } else if (userData.userType === 'COACH') {
+      // Coaches redirect to coach dashboard
+      router.push('/coach/dashboard');
+    } else if (userData.userType === 'TEAM_MANAGER') {
+      // Team admins redirect to team dashboard
+      router.push('/team/dashboard');
+    } else if (userData.userType === 'CLUB_TRAINER') {
+      // Club admins redirect to club dashboard
+      router.push('/club/dashboard');
+    } else if (userData.userType === 'GROUP_ADMIN') {
+      // Group admins redirect to group dashboard
+      router.push('/group/dashboard');
     } else {
-      // All non-admin users redirect to my-page
-      // For local testing: use local /my-page
-      // For production: use https://movesbook.com/my-page
+      // Fallback to my-page for any other types
       router.push('/my-page');
     }
   };

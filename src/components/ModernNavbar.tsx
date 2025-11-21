@@ -123,11 +123,11 @@ export default function ModernNavbar({ onLoginClick, onAdminClick }: ModernNavba
 
   const menuItems = [
     { href: '/', label: i18n.t('nav_home'), icon: Home },
-    { href: '/athletes', label: i18n.t('nav_athletes'), icon: Trophy },
-    { href: '/coaches', label: i18n.t('nav_coaches'), icon: UserCircle },
-    { href: '/teams', label: i18n.t('nav_teams'), icon: Users2 },
-    { href: '/groups', label: i18n.t('nav_groups'), icon: Users },
-    { href: '/sport-clubs', label: i18n.t('nav_sport_clubs'), icon: Building2 },
+    { href: '/athlete/dashboard', label: i18n.t('nav_athletes'), icon: Trophy },
+    { href: '/coach/dashboard', label: i18n.t('nav_coaches'), icon: UserCircle },
+    { href: '/team/dashboard', label: i18n.t('nav_teams'), icon: Users2 },
+    { href: '/group/dashboard', label: i18n.t('nav_groups'), icon: Users },
+    { href: '/club/dashboard', label: i18n.t('nav_sport_clubs'), icon: Building2 },
     { href: '/testimonials', label: i18n.t('nav_testimonials'), icon: MessageCircle },
     { href: '/news', label: i18n.t('nav_news'), icon: Newspaper },
     { href: '/sell-buy', label: i18n.t('nav_sell_buy'), icon: ShoppingCart },
@@ -166,11 +166,8 @@ export default function ModernNavbar({ onLoginClick, onAdminClick }: ModernNavba
   };
 
   const handleProfileClick = () => {
-    if (user?.userType === 'ATHLETE') {
-      router.push('/my-page');
-    } else {
-      router.push('/my-club');
-    }
+    // All users should go to My Page first to select their entity
+    router.push('/my-page');
     setIsUserDropdownOpen(false);
     setIsMobileMenuOpen(false);
   };
@@ -197,7 +194,7 @@ export default function ModernNavbar({ onLoginClick, onAdminClick }: ModernNavba
   return (
     <>
       {/* Premium Main Navigation */}
-      <nav className="bg-gradient-to-r from-slate-900 via-purple-900 to-slate-900 shadow-2xl border-b border-purple-600">
+      <nav className="bg-gradient-to-r from-slate-900 via-purple-900 to-slate-900 shadow-2xl border-b border-purple-600 sticky top-0 z-50">
         <div className="w-full px-4 sm:px-6 lg:px-8">
           {/* Top Bar with Contact Info & Language */}
           <div className="flex justify-between items-center py-3 border-b border-cyan-500 border-opacity-30">

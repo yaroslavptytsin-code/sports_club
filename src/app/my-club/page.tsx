@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, Suspense } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { 
   Users, 
   Settings, 
@@ -12,13 +13,133 @@ import {
   Award,
   Target,
   Star,
-  TrendingUp
+  TrendingUp,
+  X,
+  Loader2
 } from 'lucide-react';
 import AdvertisementCarousel from '@/components/AdvertisementCarousel';
 import ModernNavbar from '@/components/ModernNavbar';
+import { useAuth } from '@/hooks/useAuth';
 
-export default function MyClub() {
+interface ClubMember {
+  id: string;
+  member: {
+    id: string;
+    name: string;
+    username: string;
+    email: string;
+    userType: string;
+  };
+  role: string | null;
+  membershipType: string | null;
+  joinedAt: Date;
+}
+
+interface Club {
+  id: string;
+  name: string;
+  description: string | null;
+  location: string | null;
+}
+
+function MyClubContent() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const { user } = useAuth();
+  const clubId = searchParams.get('clubId');
+  
   const [activeSection, setActiveSection] = useState<'overview' | 'members' | 'workouts' | 'analytics'>('overview');
+  const [club, setClub] = useState<Club | null>(null);
+  const [members, setMembers] = useState<ClubMember[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showAddMemberModal, setShowAddMemberModal] = useState(false);
+  const [addMemberUsername, setAddMemberUsername] = useState('');
+  const [addMemberPassword, setAddMemberPassword] = useState('');
+  const [addingMember, setAddingMember] = useState(false);
+  const [addMemberError, setAddMemberError] = useState('');
+
+  useEffect(() => {
+    if (!clubId) {
+      // If no clubId selected, redirect to My Page to select a club
+      // This ensures users must select a club from My Page first
+      if (user?.userType === 'CLUB_TRAINER') {
+        router.push('/my-page');
+        return;
+      }
+      setLoading(false);
+    } else {
+      loadClubData();
+    }
+  }, [clubId, user, router]);
+
+  const loadClubData = async () => {
+    if (!clubId) return;
+    
+    setLoading(true);
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`/api/clubs/${clubId}/members`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setClub(data.club);
+        setMembers(data.members || []);
+      } else {
+        console.error('Failed to load club data');
+      }
+    } catch (error) {
+      console.error('Error loading club data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAddMember = async () => {
+    if (!clubId || !addMemberUsername || !addMemberPassword) {
+      setAddMemberError('Please enter both username and password');
+      return;
+    }
+
+    setAddingMember(true);
+    setAddMemberError('');
+
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`/api/clubs/${clubId}/members/add`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          username: addMemberUsername,
+          password: addMemberPassword
+        })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Refresh members list
+        await loadClubData();
+        // Close modal and reset form
+        setShowAddMemberModal(false);
+        setAddMemberUsername('');
+        setAddMemberPassword('');
+        setAddMemberError('');
+      } else {
+        setAddMemberError(data.error || 'Failed to add member');
+      }
+    } catch (error: any) {
+      setAddMemberError(error.message || 'An error occurred');
+    } finally {
+      setAddingMember(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 flex flex-col">
@@ -39,8 +160,8 @@ export default function MyClub() {
                 <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
                   <Users className="w-10 h-10 text-white" />
                 </div>
-                <h2 className="text-2xl font-bold text-gray-900">Elite Training Club</h2>
-                <p className="text-gray-600 text-sm mt-2">Professional Athletic Club</p>
+                <h2 className="text-2xl font-bold text-gray-900">{club?.name || 'Loading...'}</h2>
+                <p className="text-gray-600 text-sm mt-2">{club?.description || club?.location || 'Club'}</p>
               </div>
 
               <nav className="space-y-3 flex-1">
@@ -102,7 +223,7 @@ export default function MyClub() {
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
                     <span className="text-gray-600 text-sm">Total Members</span>
-                    <span className="font-bold text-blue-600 text-lg">24</span>
+                    <span className="font-bold text-blue-600 text-lg">{members.length}</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-gray-600 text-sm">Active Today</span>
@@ -119,10 +240,30 @@ export default function MyClub() {
 
           {/* Main Content - Stretched to fill remaining space */}
           <div className="flex-1 min-w-0 flex flex-col">
-            {activeSection === 'overview' && <ClubOverview />}
-            {activeSection === 'members' && <MembersSection />}
-            {activeSection === 'workouts' && <ClubWorkouts />}
-            {activeSection === 'analytics' && <AnalyticsSection />}
+            {loading ? (
+              <div className="bg-white rounded-2xl shadow-xl border border-gray-200 p-8 flex items-center justify-center">
+                <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+              </div>
+            ) : !clubId ? (
+              <div className="bg-white rounded-2xl shadow-xl border border-gray-200 p-8 flex flex-col items-center justify-center">
+                <Users className="w-16 h-16 text-gray-400 mb-4" />
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">No Club Selected</h3>
+                <p className="text-gray-600 mb-6">Please select a club from My Page to view club details.</p>
+                <button
+                  onClick={() => window.location.href = '/my-page'}
+                  className="px-6 py-3 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700"
+                >
+                  Go to My Page
+                </button>
+              </div>
+            ) : (
+              <>
+                {activeSection === 'overview' && <ClubOverview club={club} members={members} />}
+                {activeSection === 'members' && <MembersSection members={members} />}
+                {activeSection === 'workouts' && <ClubWorkouts />}
+                {activeSection === 'analytics' && <AnalyticsSection />}
+              </>
+            )}
           </div>
 
           {/* Right Sidebar */}
@@ -133,7 +274,10 @@ export default function MyClub() {
               </h3>
               
               <div className="space-y-4 flex-1">
-                <button className="w-full flex items-center justify-between p-5 border-2 border-dashed border-blue-200 rounded-2xl hover:border-blue-300 hover:bg-blue-50 transition-all duration-300 group">
+                <button 
+                  onClick={() => setShowAddMemberModal(true)}
+                  className="w-full flex items-center justify-between p-5 border-2 border-dashed border-blue-200 rounded-2xl hover:border-blue-300 hover:bg-blue-50 transition-all duration-300 group"
+                >
                   <span className="text-base font-semibold text-gray-700 group-hover:text-blue-700">Add New Member</span>
                   <UserPlus className="w-5 h-5 text-gray-400 group-hover:text-blue-500" />
                 </button>
@@ -175,8 +319,20 @@ export default function MyClub() {
   );
 }
 
+export default function MyClub() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+      </div>
+    }>
+      <MyClubContent />
+    </Suspense>
+  );
+}
+
 // Sub-components for club sections
-function ClubOverview() {
+function ClubOverview({ club, members }: { club: Club | null; members: ClubMember[] }) {
   return (
     <div className="bg-white rounded-2xl shadow-xl border border-gray-200 p-8 flex-1 flex flex-col">
       <div className="flex items-center justify-between mb-8">
@@ -193,7 +349,7 @@ function ClubOverview() {
             <h3 className="text-sm font-semibold opacity-90">Total Members</h3>
             <Users className="w-6 h-6 opacity-90" />
           </div>
-          <p className="text-4xl font-bold mt-4">24</p>
+          <p className="text-4xl font-bold mt-4">{members.length}</p>
         </div>
         
         <div className="bg-gradient-to-br from-green-500 to-green-600 p-6 rounded-2xl text-white shadow-2xl">
@@ -225,53 +381,84 @@ function ClubOverview() {
       <div className="flex-1">
         <h3 className="text-xl font-bold text-gray-900 mb-6">Recent Members</h3>
         <div className="space-y-4 h-full overflow-y-auto">
-          {[1, 2, 3, 4, 5].map((item) => (
-            <div key={item} className="flex items-center justify-between p-6 border-2 border-gray-200 rounded-2xl hover:border-blue-300 hover:bg-blue-50 transition-all duration-300 group">
-              <div className="flex items-center space-x-4">
-                <div className="w-14 h-14 bg-gradient-to-br from-blue-400 to-purple-500 rounded-2xl flex items-center justify-center text-white font-bold text-lg">
-                  {item}
-                </div>
-                <div>
-                  <h4 className="font-bold text-gray-900 text-lg">Member Name {item}</h4>
-                  <p className="text-sm text-gray-500">Joined 2 days ago • 3 workouts completed</p>
-                </div>
-              </div>
-              <div className="text-right">
-                <div className="flex items-center space-x-1 text-yellow-500 mb-1">
-                  <Star className="w-4 h-4 fill-current" />
-                  <span className="text-sm font-semibold">4.8</span>
-                </div>
-                <p className="text-sm font-medium text-green-600">Active</p>
-                <p className="text-xs text-gray-500">Last seen today</p>
-              </div>
+          {members.length === 0 ? (
+            <div className="text-center py-12 text-gray-500">
+              <Users className="w-16 h-16 mx-auto mb-4 opacity-50" />
+              <p className="text-lg">No members yet</p>
+              <p className="text-sm">Add members to get started</p>
             </div>
-          ))}
+          ) : (
+            members.slice(0, 10).map((member) => (
+              <div key={member.id} className="flex items-center justify-between p-6 border-2 border-gray-200 rounded-2xl hover:border-blue-300 hover:bg-blue-50 transition-all duration-300 group">
+                <div className="flex items-center space-x-4">
+                  <div className="w-14 h-14 bg-gradient-to-br from-blue-400 to-purple-500 rounded-2xl flex items-center justify-center text-white font-bold text-lg">
+                    {member.member.name.charAt(0).toUpperCase()}
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-gray-900 text-lg">{member.member.name}</h4>
+                    <p className="text-sm text-gray-500">@{member.member.username} • Joined {new Date(member.joinedAt).toLocaleDateString()}</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm font-medium text-gray-600">{member.member.userType}</p>
+                  {member.role && (
+                    <p className="text-xs text-gray-500">{member.role}</p>
+                  )}
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </div>
     </div>
   );
 }
 
-function MembersSection() {
+function MembersSection({ members }: { members: ClubMember[] }) {
   return (
     <div className="bg-white rounded-2xl shadow-xl border border-gray-200 p-8 flex-1 flex flex-col">
-      <h2 className="text-3xl font-bold text-gray-900 mb-8">Club Members</h2>
-      <div className="grid grid-cols-2 gap-8 flex-1">
-        <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl border-2 border-dashed border-gray-300 flex items-center justify-center p-12">
-          <div className="text-center text-gray-500">
-            <Users className="w-20 h-20 mx-auto mb-6 opacity-60" />
-            <p className="text-2xl font-bold mb-2">Member Directory</p>
-            <p className="text-lg">Manage all club members and their profiles</p>
-          </div>
-        </div>
-        <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl border-2 border-dashed border-gray-300 flex items-center justify-center p-12">
-          <div className="text-center text-gray-500">
-            <UserPlus className="w-20 h-20 mx-auto mb-6 opacity-60" />
-            <p className="text-2xl font-bold mb-2">Add Members</p>
-            <p className="text-lg">Invite new members to join your club</p>
-          </div>
+      <div className="flex items-center justify-between mb-8">
+        <h2 className="text-3xl font-bold text-gray-900">Club Members</h2>
+        <div className="text-sm text-gray-600">
+          Total: <span className="font-bold text-blue-600">{members.length}</span>
         </div>
       </div>
+
+      {members.length === 0 ? (
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-center text-gray-500">
+            <Users className="w-20 h-20 mx-auto mb-6 opacity-60" />
+            <p className="text-2xl font-bold mb-2">No Members Yet</p>
+            <p className="text-lg">Add members to get started</p>
+          </div>
+        </div>
+      ) : (
+        <div className="flex-1 overflow-y-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {members.map((member) => (
+              <div key={member.id} className="p-6 border-2 border-gray-200 rounded-2xl hover:border-blue-300 hover:bg-blue-50 transition-all duration-300">
+                <div className="flex items-center space-x-4">
+                  <div className="w-16 h-16 bg-gradient-to-br from-blue-400 to-purple-500 rounded-2xl flex items-center justify-center text-white font-bold text-xl">
+                    {member.member.name.charAt(0).toUpperCase()}
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="font-bold text-gray-900 text-lg">{member.member.name}</h4>
+                    <p className="text-sm text-gray-600">@{member.member.username}</p>
+                    <p className="text-sm text-gray-500">{member.member.email}</p>
+                    <div className="flex items-center gap-2 mt-2">
+                      <span className="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded-full">{member.member.userType}</span>
+                      {member.role && (
+                        <span className="text-xs px-2 py-1 bg-purple-100 text-purple-700 rounded-full">{member.role}</span>
+                      )}
+                    </div>
+                    <p className="text-xs text-gray-400 mt-2">Joined {new Date(member.joinedAt).toLocaleDateString()}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

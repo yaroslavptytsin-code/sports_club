@@ -325,30 +325,6 @@ export default function HomePage() {
                 ))}
               </div>
             </div>
-
-            {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-6">
-              <button
-                onClick={() => {
-                  if (handleProtectedLinkClick('/my-page')) {
-                    window.location.href = '/my-page';
-                  }
-                }}
-                className="inline-flex items-center justify-center px-12 py-6 bg-gradient-to-r from-blue-500 to-purple-500 text-white text-xl font-bold rounded-2xl hover:from-blue-600 hover:to-purple-600 transition-all duration-300 shadow-2xl hover:shadow-3xl transform hover:scale-105 min-w-[200px] text-center"
-              >
-                Access MY PAGE
-              </button>
-              <button
-                onClick={() => {
-                  if (handleProtectedLinkClick('/my-club')) {
-                    window.location.href = '/my-club';
-                  }
-                }}
-                className="inline-flex items-center justify-center px-12 py-6 bg-gradient-to-r from-green-500 to-teal-500 text-white text-xl font-bold rounded-2xl hover:from-green-600 hover:to-teal-600 transition-all duration-300 shadow-2xl hover:shadow-3xl transform hover:scale-105 min-w-[200px] text-center"
-              >
-                Access MY CLUB
-              </button>
-            </div>
           </div>
         </div>
       </div>

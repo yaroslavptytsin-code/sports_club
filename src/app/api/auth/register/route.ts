@@ -182,7 +182,8 @@ function mapUserType(frontendType: string): UserType {
     'athlete': UserType.ATHLETE,
     'coach': UserType.COACH,
     'team': UserType.TEAM_MANAGER,
-    'club': UserType.CLUB_TRAINER
+    'club': UserType.CLUB_TRAINER,
+    'group': UserType.GROUP_ADMIN
   };
   
   return typeMap[frontendType] || UserType.ATHLETE;
