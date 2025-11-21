@@ -46,6 +46,7 @@ export function useAuth() {
     setUser(userData);
     setShowLoginModal(false);
     
+<<<<<<< HEAD
     // Redirect based on user type to category-specific dashboards
     if (userData.userType === 'ADMIN') {
       // Admin users redirect to admin dashboard
@@ -73,6 +74,12 @@ export function useAuth() {
     } else {
       // Fallback to my-page for any other types
       router.push('/my-page');
+=======
+    // Redirect if there was a pending redirect
+    if (redirectAfterLogin) {
+      router.push(redirectAfterLogin);
+      setRedirectAfterLogin(null);
+>>>>>>> 21d778b56ceb678af8ea9a9eb545faff336aa642
     }
   };
 

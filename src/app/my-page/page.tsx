@@ -1,6 +1,10 @@
 'use client';
 
+<<<<<<< HEAD
 import { useState, useEffect } from 'react';
+=======
+import { useState } from 'react';
+>>>>>>> 21d778b56ceb678af8ea9a9eb545faff336aa642
 import { 
   Calendar, 
   BarChart3, 
@@ -9,6 +13,7 @@ import {
   Target,
   Award,
   Plus,
+<<<<<<< HEAD
   CheckCircle,
   Eye,
   EyeOff,
@@ -411,10 +416,92 @@ export default function MyPage() {
                     <span>Search in the Network</span>
                     <ChevronRight className="w-4 h-4" />
                 </button>
+=======
+  CheckCircle
+} from 'lucide-react';
+import AdvertisementCarousel from '@/components/AdvertisementCarousel';
+import TransitionMenuBar from '@/components/TransitionMenuBar';
+
+export default function MyPage() {
+  const [activeSection, setActiveSection] = useState<'workouts' | 'progress' | 'settings'>('workouts');
+
+  return (
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      {/* Transition Menu Bar */}
+      <TransitionMenuBar />
+
+      <div className="flex-1 flex flex-col max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6">
+        {/* Advertisement Carousel - Top Section */}
+        <div className="mb-6 flex-shrink-0">
+          <AdvertisementCarousel />
+        </div>
+
+        {/* Main Content Area - Fills remaining space */}
+        <div className="flex-1 flex gap-6 min-h-0">
+          {/* Left Sidebar */}
+          <div className="w-64 flex-shrink-0">
+            <div className="bg-white rounded-lg shadow-sm border p-4 h-full flex flex-col">
+              <nav className="space-y-2 flex-1">
+                <button
+                  onClick={() => setActiveSection('workouts')}
+                  className={`w-full flex items-center px-3 py-3 text-sm font-medium rounded-lg transition-all duration-200 ${
+                    activeSection === 'workouts'
+                      ? 'bg-blue-50 text-blue-700 border-2 border-blue-200 shadow-sm'
+                      : 'text-gray-700 hover:bg-gray-50 hover:border-gray-200 border border-transparent'
+                  }`}
+                >
+                  <Dumbbell className="w-4 h-4 mr-3" />
+                  Workouts
+                </button>
+                
+                <button
+                  onClick={() => setActiveSection('progress')}
+                  className={`w-full flex items-center px-3 py-3 text-sm font-medium rounded-lg transition-all duration-200 ${
+                    activeSection === 'progress'
+                      ? 'bg-blue-50 text-blue-700 border-2 border-blue-200 shadow-sm'
+                      : 'text-gray-700 hover:bg-gray-50 hover:border-gray-200 border border-transparent'
+                  }`}
+                >
+                  <BarChart3 className="w-4 h-4 mr-3" />
+                  Progress & Analytics
+                </button>
+                
+                <button
+                  onClick={() => setActiveSection('settings')}
+                  className={`w-full flex items-center px-3 py-3 text-sm font-medium rounded-lg transition-all duration-200 ${
+                    activeSection === 'settings'
+                      ? 'bg-blue-50 text-blue-700 border-2 border-blue-200 shadow-sm'
+                      : 'text-gray-700 hover:bg-gray-50 hover:border-gray-200 border border-transparent'
+                  }`}
+                >
+                  <Settings className="w-4 h-4 mr-3" />
+                  Settings
+                </button>
+              </nav>
+
+              {/* Quick Stats */}
+              <div className="mt-6 p-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg border border-blue-100">
+                <h3 className="text-xs font-semibold text-blue-800 uppercase tracking-wide mb-3">
+                  Quick Stats
+                </h3>
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-gray-600">This Week</span>
+                    <span className="font-bold text-blue-600">3/5</span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-gray-600">Calories</span>
+                    <span className="font-bold text-green-600">2,450</span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-gray-600">Active Days</span>
+                    <span className="font-bold text-purple-600">12</span>
+>>>>>>> 21d778b56ceb678af8ea9a9eb545faff336aa642
                   </div>
                 </div>
               </div>
             </div>
+<<<<<<< HEAD
         )}
 
         {/* Main Content Area - Fills remaining space */}
@@ -482,13 +569,22 @@ export default function MyPage() {
 
           {/* Main Content - Stretched to fill remaining space */}
           <div className="flex-1 min-w-0 flex flex-col px-4">
+=======
+          </div>
+
+          {/* Main Content - Stretched to fill remaining space */}
+          <div className="flex-1 min-w-0 flex flex-col">
+>>>>>>> 21d778b56ceb678af8ea9a9eb545faff336aa642
             {activeSection === 'workouts' && <WorkoutsSection />}
             {activeSection === 'progress' && <ProgressSection />}
             {activeSection === 'settings' && <SettingsSection />}
           </div>
 
           {/* Right Sidebar */}
+<<<<<<< HEAD
           {showRightSidebar && (
+=======
+>>>>>>> 21d778b56ceb678af8ea9a9eb545faff336aa642
           <div className="w-80 flex-shrink-0">
             <div className="bg-white rounded-lg shadow-sm border p-4 h-full flex flex-col">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">
@@ -496,6 +592,7 @@ export default function MyPage() {
               </h3>
               
               <div className="space-y-3 flex-1">
+<<<<<<< HEAD
                 {/* Add Member Button - Only for admin users */}
                 {(user?.userType === 'CLUB_TRAINER' || user?.userType === 'TEAM_MANAGER' || user?.userType === 'GROUP_ADMIN' || user?.userType === 'COACH') && (
                   <button 
@@ -507,6 +604,8 @@ export default function MyPage() {
                   </button>
                 )}
                 
+=======
+>>>>>>> 21d778b56ceb678af8ea9a9eb545faff336aa642
                 <button className="w-full flex items-center justify-between p-4 border-2 border-dashed border-gray-300 rounded-xl hover:border-blue-300 hover:bg-blue-50 transition-all duration-200 group">
                   <span className="text-sm font-medium text-gray-700 group-hover:text-blue-700">Add New Workout</span>
                   <Plus className="w-4 h-4 text-gray-400 group-hover:text-blue-500" />
@@ -535,6 +634,7 @@ export default function MyPage() {
               </div>
             </div>
           </div>
+<<<<<<< HEAD
           )}
           
           {/* Add Member Modal */}
@@ -560,6 +660,8 @@ export default function MyPage() {
               user?.userType === 'COACH' ? 'coaching-group' : 'club'
             }
           />
+=======
+>>>>>>> 21d778b56ceb678af8ea9a9eb545faff336aa642
         </div>
       </div>
     </div>
@@ -653,7 +755,10 @@ function ProgressSection() {
           </div>
         </div>
       </div>
+<<<<<<< HEAD
       <SimpleFooter />
+=======
+>>>>>>> 21d778b56ceb678af8ea9a9eb545faff336aa642
     </div>
   );
 }

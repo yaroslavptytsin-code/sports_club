@@ -1,6 +1,7 @@
 'use client';
 
 import { Trophy } from 'lucide-react';
+<<<<<<< HEAD
 import ModernNavbar from '@/components/ModernNavbar';
 import ModernFooter from '@/components/ModernFooter';
 
@@ -9,6 +10,12 @@ export default function AthletesPage() {
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex flex-col">
       <ModernNavbar />
       <div className="flex-1 py-12 px-4">
+=======
+
+export default function AthletesPage() {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 py-12 px-4">
+>>>>>>> 21d778b56ceb678af8ea9a9eb545faff336aa642
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
           <div className="flex items-center justify-center mb-4">
@@ -30,8 +37,11 @@ export default function AthletesPage() {
           </p>
         </div>
       </div>
+<<<<<<< HEAD
       </div>
       <ModernFooter />
+=======
+>>>>>>> 21d778b56ceb678af8ea9a9eb545faff336aa642
     </div>
   );
 }

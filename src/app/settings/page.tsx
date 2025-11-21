@@ -46,7 +46,11 @@ export default function SettingsPage() {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       <ModernNavbar />
       
+<<<<<<< HEAD
       <div className="w-full px-4 sm:px-6 lg:px-8 py-8">
+=======
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+>>>>>>> 21d778b56ceb678af8ea9a9eb545faff336aa642
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>

@@ -1,7 +1,11 @@
 'use client';
 
+<<<<<<< HEAD
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
+=======
+import { useState } from 'react';
+>>>>>>> 21d778b56ceb678af8ea9a9eb545faff336aa642
 import { 
   Users, 
   Settings, 
@@ -13,6 +17,7 @@ import {
   Award,
   Target,
   Star,
+<<<<<<< HEAD
   TrendingUp,
   X,
   Loader2
@@ -140,12 +145,25 @@ function MyClubContent() {
       setAddingMember(false);
     }
   };
+=======
+  TrendingUp
+} from 'lucide-react';
+import AdvertisementCarousel from '@/components/AdvertisementCarousel';
+import ModernNavbar from '@/components/ModernNavbar';
+
+export default function MyClub() {
+  const [activeSection, setActiveSection] = useState<'overview' | 'members' | 'workouts' | 'analytics'>('overview');
+>>>>>>> 21d778b56ceb678af8ea9a9eb545faff336aa642
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 flex flex-col">
       <ModernNavbar />
       
+<<<<<<< HEAD
       <div className="flex-1 flex flex-col w-full px-4 sm:px-6 lg:px-8 py-8">
+=======
+      <div className="flex-1 flex flex-col max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
+>>>>>>> 21d778b56ceb678af8ea9a9eb545faff336aa642
         {/* Advertisement Carousel - Top Section */}
         <div className="mb-8 flex-shrink-0">
           <AdvertisementCarousel />
@@ -160,8 +178,13 @@ function MyClubContent() {
                 <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
                   <Users className="w-10 h-10 text-white" />
                 </div>
+<<<<<<< HEAD
                 <h2 className="text-2xl font-bold text-gray-900">{club?.name || 'Loading...'}</h2>
                 <p className="text-gray-600 text-sm mt-2">{club?.description || club?.location || 'Club'}</p>
+=======
+                <h2 className="text-2xl font-bold text-gray-900">Elite Training Club</h2>
+                <p className="text-gray-600 text-sm mt-2">Professional Athletic Club</p>
+>>>>>>> 21d778b56ceb678af8ea9a9eb545faff336aa642
               </div>
 
               <nav className="space-y-3 flex-1">
@@ -223,7 +246,11 @@ function MyClubContent() {
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
                     <span className="text-gray-600 text-sm">Total Members</span>
+<<<<<<< HEAD
                     <span className="font-bold text-blue-600 text-lg">{members.length}</span>
+=======
+                    <span className="font-bold text-blue-600 text-lg">24</span>
+>>>>>>> 21d778b56ceb678af8ea9a9eb545faff336aa642
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-gray-600 text-sm">Active Today</span>
@@ -240,6 +267,7 @@ function MyClubContent() {
 
           {/* Main Content - Stretched to fill remaining space */}
           <div className="flex-1 min-w-0 flex flex-col">
+<<<<<<< HEAD
             {loading ? (
               <div className="bg-white rounded-2xl shadow-xl border border-gray-200 p-8 flex items-center justify-center">
                 <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
@@ -264,6 +292,12 @@ function MyClubContent() {
                 {activeSection === 'analytics' && <AnalyticsSection />}
               </>
             )}
+=======
+            {activeSection === 'overview' && <ClubOverview />}
+            {activeSection === 'members' && <MembersSection />}
+            {activeSection === 'workouts' && <ClubWorkouts />}
+            {activeSection === 'analytics' && <AnalyticsSection />}
+>>>>>>> 21d778b56ceb678af8ea9a9eb545faff336aa642
           </div>
 
           {/* Right Sidebar */}
@@ -274,10 +308,14 @@ function MyClubContent() {
               </h3>
               
               <div className="space-y-4 flex-1">
+<<<<<<< HEAD
                 <button 
                   onClick={() => setShowAddMemberModal(true)}
                   className="w-full flex items-center justify-between p-5 border-2 border-dashed border-blue-200 rounded-2xl hover:border-blue-300 hover:bg-blue-50 transition-all duration-300 group"
                 >
+=======
+                <button className="w-full flex items-center justify-between p-5 border-2 border-dashed border-blue-200 rounded-2xl hover:border-blue-300 hover:bg-blue-50 transition-all duration-300 group">
+>>>>>>> 21d778b56ceb678af8ea9a9eb545faff336aa642
                   <span className="text-base font-semibold text-gray-700 group-hover:text-blue-700">Add New Member</span>
                   <UserPlus className="w-5 h-5 text-gray-400 group-hover:text-blue-500" />
                 </button>
@@ -319,6 +357,7 @@ function MyClubContent() {
   );
 }
 
+<<<<<<< HEAD
 export default function MyClub() {
   return (
     <Suspense fallback={
@@ -333,6 +372,10 @@ export default function MyClub() {
 
 // Sub-components for club sections
 function ClubOverview({ club, members }: { club: Club | null; members: ClubMember[] }) {
+=======
+// Sub-components for club sections
+function ClubOverview() {
+>>>>>>> 21d778b56ceb678af8ea9a9eb545faff336aa642
   return (
     <div className="bg-white rounded-2xl shadow-xl border border-gray-200 p-8 flex-1 flex flex-col">
       <div className="flex items-center justify-between mb-8">
@@ -349,7 +392,11 @@ function ClubOverview({ club, members }: { club: Club | null; members: ClubMembe
             <h3 className="text-sm font-semibold opacity-90">Total Members</h3>
             <Users className="w-6 h-6 opacity-90" />
           </div>
+<<<<<<< HEAD
           <p className="text-4xl font-bold mt-4">{members.length}</p>
+=======
+          <p className="text-4xl font-bold mt-4">24</p>
+>>>>>>> 21d778b56ceb678af8ea9a9eb545faff336aa642
         </div>
         
         <div className="bg-gradient-to-br from-green-500 to-green-600 p-6 rounded-2xl text-white shadow-2xl">
@@ -381,6 +428,7 @@ function ClubOverview({ club, members }: { club: Club | null; members: ClubMembe
       <div className="flex-1">
         <h3 className="text-xl font-bold text-gray-900 mb-6">Recent Members</h3>
         <div className="space-y-4 h-full overflow-y-auto">
+<<<<<<< HEAD
           {members.length === 0 ? (
             <div className="text-center py-12 text-gray-500">
               <Users className="w-16 h-16 mx-auto mb-4 opacity-50" />
@@ -408,12 +456,36 @@ function ClubOverview({ club, members }: { club: Club | null; members: ClubMembe
               </div>
             ))
           )}
+=======
+          {[1, 2, 3, 4, 5].map((item) => (
+            <div key={item} className="flex items-center justify-between p-6 border-2 border-gray-200 rounded-2xl hover:border-blue-300 hover:bg-blue-50 transition-all duration-300 group">
+              <div className="flex items-center space-x-4">
+                <div className="w-14 h-14 bg-gradient-to-br from-blue-400 to-purple-500 rounded-2xl flex items-center justify-center text-white font-bold text-lg">
+                  {item}
+                </div>
+                <div>
+                  <h4 className="font-bold text-gray-900 text-lg">Member Name {item}</h4>
+                  <p className="text-sm text-gray-500">Joined 2 days ago • 3 workouts completed</p>
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="flex items-center space-x-1 text-yellow-500 mb-1">
+                  <Star className="w-4 h-4 fill-current" />
+                  <span className="text-sm font-semibold">4.8</span>
+                </div>
+                <p className="text-sm font-medium text-green-600">Active</p>
+                <p className="text-xs text-gray-500">Last seen today</p>
+              </div>
+            </div>
+          ))}
+>>>>>>> 21d778b56ceb678af8ea9a9eb545faff336aa642
         </div>
       </div>
     </div>
   );
 }
 
+<<<<<<< HEAD
 function MembersSection({ members }: { members: ClubMember[] }) {
   return (
     <div className="bg-white rounded-2xl shadow-xl border border-gray-200 p-8 flex-1 flex flex-col">
@@ -459,6 +531,28 @@ function MembersSection({ members }: { members: ClubMember[] }) {
           </div>
         </div>
       )}
+=======
+function MembersSection() {
+  return (
+    <div className="bg-white rounded-2xl shadow-xl border border-gray-200 p-8 flex-1 flex flex-col">
+      <h2 className="text-3xl font-bold text-gray-900 mb-8">Club Members</h2>
+      <div className="grid grid-cols-2 gap-8 flex-1">
+        <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl border-2 border-dashed border-gray-300 flex items-center justify-center p-12">
+          <div className="text-center text-gray-500">
+            <Users className="w-20 h-20 mx-auto mb-6 opacity-60" />
+            <p className="text-2xl font-bold mb-2">Member Directory</p>
+            <p className="text-lg">Manage all club members and their profiles</p>
+          </div>
+        </div>
+        <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl border-2 border-dashed border-gray-300 flex items-center justify-center p-12">
+          <div className="text-center text-gray-500">
+            <UserPlus className="w-20 h-20 mx-auto mb-6 opacity-60" />
+            <p className="text-2xl font-bold mb-2">Add Members</p>
+            <p className="text-lg">Invite new members to join your club</p>
+          </div>
+        </div>
+      </div>
+>>>>>>> 21d778b56ceb678af8ea9a9eb545faff336aa642
     </div>
   );
 }
