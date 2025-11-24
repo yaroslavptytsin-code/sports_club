@@ -1,13 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-<<<<<<< HEAD
 import { X, ArrowLeft } from 'lucide-react';
-=======
-import { X } from 'lucide-react';
->>>>>>> 21d778b56ceb678af8ea9a9eb545faff336aa642
 import { useAuth } from '@/hooks/useAuth';
 import { useRouter } from "next/navigation";
+import { useLanguage } from '@/contexts/LanguageContext';
 
 
 interface LoginModalProps {
@@ -15,10 +12,10 @@ interface LoginModalProps {
     onClose: () => void;
 }
 
-<<<<<<< HEAD
 type ViewMode = 'login' | 'reset-password' | 'reset-username';
 
 export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
+    const { t } = useLanguage();
     const [viewMode, setViewMode] = useState<ViewMode>('login');
     const [formData, setFormData] = useState({
         identifier: '', // Can be email or username
@@ -39,16 +36,6 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
-=======
-export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
-    const [formData, setFormData] = useState({
-        identifier: '', // Can be email or username
-        password: '',
-        userType: 'athlete' as 'athlete' | 'coach' | 'team' | 'club'
-    });
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState('');
->>>>>>> 21d778b56ceb678af8ea9a9eb545faff336aa642
     const { login } = useAuth();
     const router = useRouter();
 
@@ -56,16 +43,12 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
     useEffect(() => {
         if (!isOpen) {
             // Reset form data when modal is closed
-<<<<<<< HEAD
             setViewMode('login');
-=======
->>>>>>> 21d778b56ceb678af8ea9a9eb545faff336aa642
             setFormData({
                 identifier: '',
                 password: '',
                 userType: 'athlete'
             });
-<<<<<<< HEAD
             setResetPasswordData({
                 identifier: '',
                 newPassword: '',
@@ -79,9 +62,6 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
             });
             setError('');
             setSuccess('');
-=======
-            setError('');
->>>>>>> 21d778b56ceb678af8ea9a9eb545faff336aa642
             setIsLoading(false);
         }
     }, [isOpen]);
@@ -90,10 +70,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
         e.preventDefault();
         setIsLoading(true);
         setError('');
-<<<<<<< HEAD
         setSuccess('');
-=======
->>>>>>> 21d778b56ceb678af8ea9a9eb545faff336aa642
 
         try {
             const response = await fetch('/api/auth/login', {
@@ -120,7 +97,6 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
         }
     };
 
-<<<<<<< HEAD
     const handleResetPassword = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
@@ -129,14 +105,14 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
 
         // Validate passwords match
         if (resetPasswordData.newPassword !== resetPasswordData.confirmPassword) {
-            setError('Passwords do not match');
+            setError(t('alert_password_mismatch'));
             setIsLoading(false);
             return;
         }
 
         // Validate password strength
         if (resetPasswordData.newPassword.length < 6) {
-            setError('Password must be at least 6 characters long');
+            setError(t('auth_password_min_length'));
             setIsLoading(false);
             return;
         }
@@ -157,10 +133,10 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
             const data = await response.json();
 
             if (!response.ok) {
-                throw new Error(data.error || 'Password reset failed');
+                throw new Error(data.error || t('auth_password_reset_failed'));
             }
 
-            setSuccess('Password has been reset successfully! You can now sign in.');
+            setSuccess(t('auth_password_reset_success'));
             setTimeout(() => {
                 setViewMode('login');
                 setResetPasswordData({
@@ -186,13 +162,13 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
 
         // Validate username
         if (resetUsernameData.newUsername.length < 3) {
-            setError('Username must be at least 3 characters long');
+            setError(t('auth_username_min_length'));
             setIsLoading(false);
             return;
         }
 
         if (!/^[a-zA-Z0-9_]+$/.test(resetUsernameData.newUsername)) {
-            setError('Username can only contain letters, numbers, and underscores');
+            setError(t('auth_username_format'));
             setIsLoading(false);
             return;
         }
@@ -213,10 +189,10 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
             const data = await response.json();
 
             if (!response.ok) {
-                throw new Error(data.error || 'Username reset failed');
+                throw new Error(data.error || t('auth_username_reset_failed'));
             }
 
-            setSuccess(`Username has been reset successfully! Your new username is: ${data.newUsername}`);
+            setSuccess(t('auth_username_reset_success').replace('{username}', data.newUsername));
             setTimeout(() => {
                 setViewMode('login');
                 setResetUsernameData({
@@ -239,10 +215,10 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
         <>
             <div className="text-center mb-8">
                 <h2 className="text-3xl font-bold text-white mb-2">
-                    Welcome Back
+                    {t('auth_welcome_back')}
                 </h2>
                 <p className="text-cyan-100">
-                    Sign in to access your account
+                    {t('auth_sign_in_subtitle')}
                 </p>
             </div>
 
@@ -261,7 +237,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
             <form onSubmit={handleSubmit} className="space-y-6" autoComplete="off" key={isOpen ? 'open' : 'closed'}>
                 <div>
                     <label htmlFor="user-type" className="block text-sm font-medium text-white mb-2">
-                        I am a:
+                        {t('auth_select_user_type')}:
                     </label>
                     <select
                         id="user-type"
@@ -269,17 +245,17 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
                         onChange={(e) => setFormData({ ...formData, userType: e.target.value as any })}
                         className="w-full px-4 py-3 bg-white bg-opacity-10 backdrop-blur-sm border border-cyan-500 border-opacity-30 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent transition-all duration-200"
                     >
-                        <option value="athlete" className="text-gray-800">Athlete</option>
-                        <option value="coach" className="text-gray-800">Coach</option>
-                        <option value="team" className="text-gray-800">Team Manager</option>
-                        <option value="club" className="text-gray-800">Club Trainer</option>
-                        <option value="group" className="text-gray-800">Group</option>
+                        <option value="athlete" className="text-gray-800">{t('user_type_athlete')}</option>
+                        <option value="coach" className="text-gray-800">{t('user_type_coach')}</option>
+                        <option value="team" className="text-gray-800">{t('user_type_team')}</option>
+                        <option value="club" className="text-gray-800">{t('user_type_club')}</option>
+                        <option value="group" className="text-gray-800">{t('user_type_group')}</option>
                     </select>
                 </div>
 
                 <div>
                     <label htmlFor="user-identifier" className="block text-sm font-medium text-white mb-2">
-                        Email or Username
+                        {t('auth_email_or_username')}
                     </label>
                     <input
                         type="text"
@@ -293,13 +269,13 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
                         value={formData.identifier}
                         onChange={(e) => setFormData({ ...formData, identifier: e.target.value })}
                         className="w-full px-4 py-3 bg-white bg-opacity-10 backdrop-blur-sm border border-cyan-500 border-opacity-30 rounded-xl text-white placeholder-cyan-200 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent transition-all duration-200"
-                        placeholder="Enter your email or username"
+                        placeholder={t('auth_email_or_username')}
                     />
                 </div>
 
                 <div>
                     <label htmlFor="user-password" className="block text-sm font-medium text-white mb-2">
-                        Password
+                        {t('auth_password')}
                     </label>
                     <input
                         type="password"
@@ -310,7 +286,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
                         value={formData.password}
                         onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                         className="w-full px-4 py-3 bg-white bg-opacity-10 backdrop-blur-sm border border-cyan-500 border-opacity-30 rounded-xl text-white placeholder-cyan-200 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent transition-all duration-200"
-                        placeholder="Enter your password"
+                        placeholder={t('auth_password')}
                     />
                 </div>
 
@@ -320,14 +296,14 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
                         onClick={() => setViewMode('reset-password')}
                         className="text-cyan-200 hover:text-white transition-colors underline"
                     >
-                        Forgot Password?
+                        {t('auth_forgot_password')}
                     </button>
                     <button
                         type="button"
                         onClick={() => setViewMode('reset-username')}
                         className="text-cyan-200 hover:text-white transition-colors underline"
                     >
-                        Forgot Username?
+                        {t('auth_reset_username')}?
                     </button>
                 </div>
 
@@ -339,17 +315,17 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
                     {isLoading ? (
                         <div className="flex items-center justify-center">
                             <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                            Signing in...
+                            {t('loading')}
                         </div>
                     ) : (
-                        'Sign In'
+                        t('auth_sign_in')
                     )}
                 </button>
             </form>
 
             <div className="mt-6 text-center">
                 <p className="text-cyan-200 text-sm">
-                    Don't have an account?{' '}
+                    {t('auth_no_account')}{' '}
                     <button
                         onClick={() => {
                             onClose();
@@ -357,7 +333,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
                         }}
                         className="text-white font-semibold hover:text-cyan-200 transition-colors underline"
                     >
-                        Sign up here
+                        {t('auth_sign_up')}
                     </button>
                 </p>
             </div>
@@ -371,15 +347,15 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
                 className="flex items-center text-cyan-200 hover:text-white transition-colors mb-4"
             >
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                Back to Login
+                {t('auth_back_to_login')}
             </button>
 
             <div className="text-center mb-8">
                 <h2 className="text-3xl font-bold text-white mb-2">
-                    Reset Password
+                    {t('auth_reset_password_title')}
                 </h2>
                 <p className="text-cyan-100">
-                    Enter your email or username to reset your password
+                    {t('auth_reset_password_subtitle')}
                 </p>
             </div>
 
@@ -398,7 +374,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
             <form onSubmit={handleResetPassword} className="space-y-6">
                 <div>
                     <label htmlFor="reset-password-user-type" className="block text-sm font-medium text-white mb-2">
-                        I am a:
+                        {t('auth_select_user_type')}:
                     </label>
                     <select
                         id="reset-password-user-type"
@@ -406,17 +382,17 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
                         onChange={(e) => setResetPasswordData({ ...resetPasswordData, userType: e.target.value as any })}
                         className="w-full px-4 py-3 bg-white bg-opacity-10 backdrop-blur-sm border border-cyan-500 border-opacity-30 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent transition-all duration-200"
                     >
-                        <option value="athlete" className="text-gray-800">Athlete</option>
-                        <option value="coach" className="text-gray-800">Coach</option>
-                        <option value="team" className="text-gray-800">Team Manager</option>
-                        <option value="club" className="text-gray-800">Club Trainer</option>
-                        <option value="group" className="text-gray-800">Group</option>
+                        <option value="athlete" className="text-gray-800">{t('user_type_athlete')}</option>
+                        <option value="coach" className="text-gray-800">{t('user_type_coach')}</option>
+                        <option value="team" className="text-gray-800">{t('user_type_team')}</option>
+                        <option value="club" className="text-gray-800">{t('user_type_club')}</option>
+                        <option value="group" className="text-gray-800">{t('user_type_group')}</option>
                     </select>
                 </div>
 
                 <div>
                     <label htmlFor="reset-password-identifier" className="block text-sm font-medium text-white mb-2">
-                        Email or Username
+                        {t('auth_email_or_username')}
                     </label>
                     <input
                         type="text"
@@ -425,13 +401,13 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
                         value={resetPasswordData.identifier}
                         onChange={(e) => setResetPasswordData({ ...resetPasswordData, identifier: e.target.value })}
                         className="w-full px-4 py-3 bg-white bg-opacity-10 backdrop-blur-sm border border-cyan-500 border-opacity-30 rounded-xl text-white placeholder-cyan-200 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent transition-all duration-200"
-                        placeholder="Enter your email or username"
+                        placeholder={t('auth_email_or_username')}
                     />
                 </div>
 
                 <div>
                     <label htmlFor="reset-password-new" className="block text-sm font-medium text-white mb-2">
-                        New Password
+                        {t('auth_new_password')}
                     </label>
                     <input
                         type="password"
@@ -440,13 +416,13 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
                         value={resetPasswordData.newPassword}
                         onChange={(e) => setResetPasswordData({ ...resetPasswordData, newPassword: e.target.value })}
                         className="w-full px-4 py-3 bg-white bg-opacity-10 backdrop-blur-sm border border-cyan-500 border-opacity-30 rounded-xl text-white placeholder-cyan-200 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent transition-all duration-200"
-                        placeholder="Enter new password (min 6 characters)"
+                        placeholder={t('auth_new_password')}
                     />
                 </div>
 
                 <div>
                     <label htmlFor="reset-password-confirm" className="block text-sm font-medium text-white mb-2">
-                        Confirm Password
+                        {t('auth_confirm_password')}
                     </label>
                     <input
                         type="password"
@@ -455,7 +431,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
                         value={resetPasswordData.confirmPassword}
                         onChange={(e) => setResetPasswordData({ ...resetPasswordData, confirmPassword: e.target.value })}
                         className="w-full px-4 py-3 bg-white bg-opacity-10 backdrop-blur-sm border border-cyan-500 border-opacity-30 rounded-xl text-white placeholder-cyan-200 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent transition-all duration-200"
-                        placeholder="Confirm new password"
+                        placeholder={t('auth_confirm_password')}
                     />
                 </div>
 
@@ -467,10 +443,10 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
                     {isLoading ? (
                         <div className="flex items-center justify-center">
                             <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                            Resetting...
+                            {t('loading')}
                         </div>
                     ) : (
-                        'Reset Password'
+                        t('auth_reset_password')
                     )}
                 </button>
             </form>
@@ -484,15 +460,15 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
                 className="flex items-center text-cyan-200 hover:text-white transition-colors mb-4"
             >
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                Back to Login
+                {t('auth_back_to_login')}
             </button>
 
             <div className="text-center mb-8">
                 <h2 className="text-3xl font-bold text-white mb-2">
-                    Reset Username
+                    {t('auth_reset_username_title')}
                 </h2>
                 <p className="text-cyan-100">
-                    Enter your email to reset your username
+                    {t('auth_reset_username_subtitle')}
                 </p>
             </div>
 
@@ -511,7 +487,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
             <form onSubmit={handleResetUsername} className="space-y-6">
                 <div>
                     <label htmlFor="reset-username-user-type" className="block text-sm font-medium text-white mb-2">
-                        I am a:
+                        {t('auth_select_user_type')}:
                     </label>
                     <select
                         id="reset-username-user-type"
@@ -519,17 +495,17 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
                         onChange={(e) => setResetUsernameData({ ...resetUsernameData, userType: e.target.value as any })}
                         className="w-full px-4 py-3 bg-white bg-opacity-10 backdrop-blur-sm border border-cyan-500 border-opacity-30 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent transition-all duration-200"
                     >
-                        <option value="athlete" className="text-gray-800">Athlete</option>
-                        <option value="coach" className="text-gray-800">Coach</option>
-                        <option value="team" className="text-gray-800">Team Manager</option>
-                        <option value="club" className="text-gray-800">Club Trainer</option>
-                        <option value="group" className="text-gray-800">Group</option>
+                        <option value="athlete" className="text-gray-800">{t('user_type_athlete')}</option>
+                        <option value="coach" className="text-gray-800">{t('user_type_coach')}</option>
+                        <option value="team" className="text-gray-800">{t('user_type_team')}</option>
+                        <option value="club" className="text-gray-800">{t('user_type_club')}</option>
+                        <option value="group" className="text-gray-800">{t('user_type_group')}</option>
                     </select>
                 </div>
 
                 <div>
                     <label htmlFor="reset-username-email" className="block text-sm font-medium text-white mb-2">
-                        Email
+                        {t('auth_email')}
                     </label>
                     <input
                         type="email"
@@ -538,13 +514,13 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
                         value={resetUsernameData.email}
                         onChange={(e) => setResetUsernameData({ ...resetUsernameData, email: e.target.value })}
                         className="w-full px-4 py-3 bg-white bg-opacity-10 backdrop-blur-sm border border-cyan-500 border-opacity-30 rounded-xl text-white placeholder-cyan-200 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent transition-all duration-200"
-                        placeholder="Enter your email address"
+                        placeholder={t('auth_email')}
                     />
                 </div>
 
                 <div>
                     <label htmlFor="reset-username-new" className="block text-sm font-medium text-white mb-2">
-                        New Username
+                        {t('auth_new_username')}
                     </label>
                     <input
                         type="text"
@@ -553,7 +529,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
                         value={resetUsernameData.newUsername}
                         onChange={(e) => setResetUsernameData({ ...resetUsernameData, newUsername: e.target.value })}
                         className="w-full px-4 py-3 bg-white bg-opacity-10 backdrop-blur-sm border border-cyan-500 border-opacity-30 rounded-xl text-white placeholder-cyan-200 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent transition-all duration-200"
-                        placeholder="Enter new username (min 3 characters)"
+                        placeholder={t('auth_new_username')}
                     />
                 </div>
 
@@ -565,20 +541,18 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
                     {isLoading ? (
                         <div className="flex items-center justify-center">
                             <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                            Resetting...
+                            {t('loading')}
                         </div>
                     ) : (
-                        'Reset Username'
+                        t('auth_reset_username')
                     )}
                 </button>
             </form>
-        </>
+        </> 
     );
 
-=======
     if (!isOpen) return null;
 
->>>>>>> 21d778b56ceb678af8ea9a9eb545faff336aa642
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-60 backdrop-blur-md">
             <div className="relative w-full max-w-md">
@@ -592,114 +566,10 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
                         <X className="w-6 h-6" />
                     </button>
 
-<<<<<<< HEAD
                     {/* Render appropriate form based on view mode */}
                     {viewMode === 'login' && renderLoginForm()}
                     {viewMode === 'reset-password' && renderResetPasswordForm()}
                     {viewMode === 'reset-username' && renderResetUsernameForm()}
-=======
-                    {/* Modal Content */}
-                    <div className="text-center mb-8">
-                        <h2 className="text-3xl font-bold text-white mb-2">
-                            Welcome Back
-                        </h2>
-                        <p className="text-cyan-100">
-                            Sign in to access your account
-                        </p>
-                    </div>
-
-                    {error && (
-                        <div className="bg-red-500 bg-opacity-20 backdrop-blur-sm border border-red-400 border-opacity-30 text-red-200 px-4 py-3 rounded-xl mb-6">
-                            {error}
-                        </div>
-                    )}
-
-                    <form onSubmit={handleSubmit} className="space-y-6" autoComplete="off" key={isOpen ? 'open' : 'closed'}>
-                        <div>
-                            <label htmlFor="user-type" className="block text-sm font-medium text-white mb-2">
-                                I am a:
-                            </label>
-                            <select
-                                id="user-type"
-                                value={formData.userType}
-                                onChange={(e) => setFormData({ ...formData, userType: e.target.value as any })}
-                                className="w-full px-4 py-3 bg-white bg-opacity-10 backdrop-blur-sm border border-cyan-500 border-opacity-30 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent transition-all duration-200"
-                            >
-                                <option value="athlete" className="text-gray-800">Athlete</option>
-                                <option value="coach" className="text-gray-800">Coach</option>
-                                <option value="team" className="text-gray-800">Team Manager</option>
-                                <option value="club" className="text-gray-800">Club Trainer</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label htmlFor="user-identifier" className="block text-sm font-medium text-white mb-2">
-                                Email or Username
-                            </label>
-                            <input
-                                type="text"
-                                id="user-identifier"
-                                name="user-login-identifier"
-                                autoComplete="new-password"
-                                autoCorrect="off"
-                                autoCapitalize="off"
-                                spellCheck="false"
-                                required
-                                value={formData.identifier}
-                                onChange={(e) => setFormData({ ...formData, identifier: e.target.value })}
-                                className="w-full px-4 py-3 bg-white bg-opacity-10 backdrop-blur-sm border border-cyan-500 border-opacity-30 rounded-xl text-white placeholder-cyan-200 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent transition-all duration-200"
-                                placeholder="Enter your email or username"
-                            />
-                        </div>
-
-                        <div>
-                            <label htmlFor="user-password" className="block text-sm font-medium text-white mb-2">
-                                Password
-                            </label>
-                            <input
-                                type="password"
-                                id="user-password"
-                                name="user-login-password"
-                                autoComplete="new-password"
-                                required
-                                value={formData.password}
-                                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                                className="w-full px-4 py-3 bg-white bg-opacity-10 backdrop-blur-sm border border-cyan-500 border-opacity-30 rounded-xl text-white placeholder-cyan-200 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent transition-all duration-200"
-                                placeholder="Enter your password"
-                            />
-                        </div>
-
-                        <button
-                            type="submit"
-                            disabled={isLoading}
-                            className="w-full py-4 px-6 bg-gradient-to-r from-cyan-500 to-purple-500 text-white font-semibold rounded-xl hover:from-cyan-600 hover:to-purple-600 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 shadow-2xl"
-                        >
-                            {isLoading ? (
-                                <div className="flex items-center justify-center">
-                                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                                    Signing in...
-                                </div>
-                            ) : (
-                                'Sign In'
-                            )}
-                        </button>
-                    </form>
-
-                    <div className="mt-6 text-center">
-                        <p className="text-cyan-200 text-sm">
-                            Don't have an account?{' '}
-                            <button
-                                onClick={() => {
-                                    onClose();
-                                    router.push("/register");
-                                }}
-                                className="text-white font-semibold hover:text-cyan-200 transition-colors underline"
-                            >
-                                Sign up here
-                            </button>
-                        </p>
-                    </div>
->>>>>>> 21d778b56ceb678af8ea9a9eb545faff336aa642
                 </div>
 
                 {/* Decorative Glow Effect */}

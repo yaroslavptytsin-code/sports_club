@@ -7,6 +7,7 @@ import LoginModal from '@/components/LoginModal';
 import AdminLoginModal from '@/components/AdminLoginModal';
 import { useAuth } from '@/hooks/useAuth';
 import { useEffect } from 'react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 
 // Sample data for image cards
@@ -123,23 +124,23 @@ const shoppingItems = [
 
 // Icons for features
 const FeatureIcons = {
-  Calendar: () => (
-    <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  Calendar: ({ className }: { className?: string }) => (
+    <svg className={className || "w-10 h-10"} fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
     </svg>
   ),
-  Chart: () => (
-    <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  Chart: ({ className }: { className?: string }) => (
+    <svg className={className || "w-10 h-10"} fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
     </svg>
   ),
-  Users: () => (
-    <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  Users: ({ className }: { className?: string }) => (
+    <svg className={className || "w-10 h-10"} fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
     </svg>
   ),
-  Target: () => (
-    <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  Target: ({ className }: { className?: string }) => (
+    <svg className={className || "w-10 h-10"} fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
     </svg>
   ),
@@ -213,6 +214,7 @@ function getFeaturesForUserType(userType: string) {
 }
 
 export default function HomePage() {
+  const { t } = useLanguage();
   const [userType, setUserType] = useState<'athlete' | 'coach' | 'team' | 'group' | 'club'>('athlete');
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showAdminModal, setShowAdminModal] = useState(false);
@@ -277,21 +279,21 @@ export default function HomePage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16 text-white">
               <h1 className="text-5xl md:text-7xl font-bold mb-6 drop-shadow-2xl">
-                Professional
-                <span className="text-blue-300"> Workout</span>
+                {t('home_title_professional')}
+                <span className="text-blue-300"> {t('home_title_workout')}</span>
               </h1>
               <p className="text-2xl md:text-3xl mb-8 max-w-4xl mx-auto drop-shadow-lg opacity-95 leading-relaxed">
-                Transform your fitness journey with our comprehensive management system
+                {t('home_subtitle')}
               </p>
               
               {/* User Type Selection */}
               <div className="flex justify-center space-x-4 mb-12 flex-wrap gap-4">
                 {[
-                  { id: 'athlete' as const, label: 'Athlete' },
-                  { id: 'coach' as const, label: 'Coach' },
-                  { id: 'team' as const, label: 'Team' },
-                  { id: 'group' as const, label: 'Group' },
-                  { id: 'club' as const, label: 'Club' }
+                  { id: 'athlete' as const, label: t('user_type_athlete') },
+                  { id: 'coach' as const, label: t('user_type_coach') },
+                  { id: 'team' as const, label: t('user_type_team') },
+                  { id: 'group' as const, label: t('user_type_group') },
+                  { id: 'club' as const, label: t('user_type_club') }
                 ].map((type) => (
                   <button
                     key={type.id}
@@ -325,33 +327,6 @@ export default function HomePage() {
                 ))}
               </div>
             </div>
-<<<<<<< HEAD
-=======
-
-            {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-6">
-              <button
-                onClick={() => {
-                  if (handleProtectedLinkClick('/my-page')) {
-                    window.location.href = '/my-page';
-                  }
-                }}
-                className="inline-flex items-center justify-center px-12 py-6 bg-gradient-to-r from-blue-500 to-purple-500 text-white text-xl font-bold rounded-2xl hover:from-blue-600 hover:to-purple-600 transition-all duration-300 shadow-2xl hover:shadow-3xl transform hover:scale-105 min-w-[200px] text-center"
-              >
-                Access MY PAGE
-              </button>
-              <button
-                onClick={() => {
-                  if (handleProtectedLinkClick('/my-club')) {
-                    window.location.href = '/my-club';
-                  }
-                }}
-                className="inline-flex items-center justify-center px-12 py-6 bg-gradient-to-r from-green-500 to-teal-500 text-white text-xl font-bold rounded-2xl hover:from-green-600 hover:to-teal-600 transition-all duration-300 shadow-2xl hover:shadow-3xl transform hover:scale-105 min-w-[200px] text-center"
-              >
-                Access MY CLUB
-              </button>
-            </div>
->>>>>>> 21d778b56ceb678af8ea9a9eb545faff336aa642
           </div>
         </div>
       </div>
@@ -362,9 +337,9 @@ export default function HomePage() {
         <section className="py-16 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
-              <h2 className="text-4xl font-bold text-gray-900 mb-4">Sports Categories</h2>
+              <h2 className="text-4xl font-bold text-gray-900 mb-4">{t('home_sports_categories')}</h2>
               <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                Explore our comprehensive training programs across various sports disciplines
+                {t('home_sports_subtitle')}
               </p>
             </div>
             
@@ -383,7 +358,7 @@ export default function HomePage() {
                     <h3 className="text-xl font-bold text-gray-900 mb-2 text-center">{sport.title}</h3>
                     <p className="text-gray-600 mb-4 text-center">{sport.description}</p>
                     <button className="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white py-3 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-200 text-center">
-                      Explore Programs
+                      {t('home_explore_programs')}
                     </button>
                   </div>
                 </div>
@@ -396,8 +371,8 @@ export default function HomePage() {
         <section className="py-16 bg-gray-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
-              <h2 className="text-4xl font-bold text-gray-900 mb-4">Latest News</h2>
-              <p className="text-xl text-gray-600 text-center">Stay updated with the latest fitness trends and research</p>
+              <h2 className="text-4xl font-bold text-gray-900 mb-4">{t('home_latest_news')}</h2>
+              <p className="text-xl text-gray-600 text-center">{t('home_news_subtitle')}</p>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -421,7 +396,7 @@ export default function HomePage() {
                     <p className="text-gray-600 mb-4 text-center">{article.excerpt}</p>
                     <div className="flex justify-center">
                       <button className="text-blue-600 font-semibold hover:text-blue-700 transition-colors flex items-center">
-                        Read More
+                        {t('home_read_more')}
                         <span className="ml-2 transform group-hover:translate-x-1 transition-transform">→</span>
                       </button>
                     </div>
@@ -436,8 +411,8 @@ export default function HomePage() {
         <section className="py-16 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
-              <h2 className="text-4xl font-bold text-gray-900 mb-4">Featured Products</h2>
-              <p className="text-xl text-gray-600 text-center">Top-rated fitness equipment and accessories</p>
+              <h2 className="text-4xl font-bold text-gray-900 mb-4">{t('home_featured_products')}</h2>
+              <p className="text-xl text-gray-600 text-center">{t('home_products_subtitle')}</p>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">

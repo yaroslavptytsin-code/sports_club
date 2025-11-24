@@ -21,7 +21,6 @@ model User {
   periods      Period[]
   sections     WorkoutSection[]
   settings     UserSettings?
-<<<<<<< HEAD
   mainSports   UserMainSport[]
 
   // Legacy coach-athlete relationship (keeping for backward compatibility)
@@ -39,11 +38,6 @@ model User {
   teamMemberships          TeamMember[]
   clubMemberships          ClubMember[]
   groupMemberships         GroupMember[]
-=======
-  athletes     CoachAthlete[] @relation("CoachAthletes")
-  coaches      CoachAthlete[] @relation("AthleteCoaches")
-  mainSports   UserMainSport[]
->>>>>>> 21d778b56ceb678af8ea9a9eb545faff336aa642
 
   @@map("users")
 }
@@ -53,11 +47,42 @@ enum UserType {
   COACH
   TEAM_MANAGER
   CLUB_TRAINER
-<<<<<<< HEAD
   GROUP_ADMIN
-=======
->>>>>>> 21d778b56ceb678af8ea9a9eb545faff336aa642
   ADMIN
+}
+
+// Translation System Models
+model Language {
+  id           String        @id @default(cuid())
+  code         String        @unique // ISO code: 'en', 'es', 'zh', etc.
+  name         String        // Display name: 'English', 'Español', etc.
+  isActive     Boolean       @default(true)
+  isDefault    Boolean       @default(false)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  
+  translations Translation[]
+  
+  @@map("languages")
+}
+
+model Translation {
+  id            String   @id @default(cuid())
+  key           String   // Unique key like 'auth_login_button'
+  languageId    String
+  value         String   @default("") // The translated text
+  category      String   @default("general") // 'button', 'alert', 'long_text', etc.
+  descriptionEn String   @default("") // Description for translators
+  lastUpdated   DateTime @updatedAt
+  createdAt     DateTime @default(now())
+  
+  language      Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
+  
+  @@unique([key, languageId])
+  @@index([key])
+  @@index([languageId])
+  @@index([category])
+  @@map("translations")
 }
 
 model CoachAthlete {
@@ -298,7 +323,6 @@ model UserMainSport {
 
   @@unique([userId, sport])
   @@map("user_main_sports")
-<<<<<<< HEAD
 }
 
 // ===== NEW ORGANIZATIONAL STRUCTURE MODELS =====
@@ -426,6 +450,4 @@ model GroupMember {
 
   @@unique([groupId, userId])
   @@map("group_members")
-=======
->>>>>>> 21d778b56ceb678af8ea9a9eb545faff336aa642
 }
