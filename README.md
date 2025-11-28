@@ -1,222 +1,245 @@
-# MovesBook.com - Workout Management System
+# 🏊‍♂️ Movesbook - Advanced Workout Management Platform
 
-Modern workout tracking and management platform for athletes, coaches, teams, and clubs.
+## Project Overview
+A comprehensive full-stack web application for athletes, coaches, clubs, and teams to manage training programs, track performance, and collaborate on workout planning.
 
-**Status**: ✅ Production Ready  
-**Users**: 946 migrated from movesbook.net  
-**Authentication**: JWT with RSA signing + bcrypt hashing
-
-## 🚀 Quick Start
-
-### Prerequisites
-- Node.js 18+ 
-- npm or yarn
-
-### Installation
-
-```bash
-# Install dependencies
-npm install
-
-# Setup database
-npx prisma generate
-npx prisma db push
-
-# Start development server
-npm run dev
-```
-
-Visit: http://localhost:3000
-
-### Production Build
-
-```bash
-npm run build
-npm start
-```
-
-## 🔐 Authentication
-
-### User Login
-- Login with **email** or **username**
-- Supports athletes, coaches, team managers, and club trainers
-- JWT-based authentication with RSA signing
-
-### Admin Login
-- Access via Admin button in navbar
-- Secure bcrypt password hashing
-- Environment variable configuration
-
-## 🛠️ Technology Stack
-
-### Frontend
-- **Framework**: Next.js 14.2.33
-- **Language**: TypeScript 5.0
-- **UI**: React 18
-- **Styling**: Tailwind CSS
-- **Animations**: Framer Motion
-
-### Backend
-- **API**: Next.js API Routes
-- **Database**: SQLite (dev) / PostgreSQL (production)
-- **ORM**: Prisma 6.19.0
-- **Authentication**: JWT (jsonwebtoken)
-- **Password Hashing**: bcrypt
-
-## 📁 Project Structure
-
-```
-movesbook/
-├── src/
-│   ├── app/                 # Next.js app directory
-│   │   ├── api/            # API routes (backend)
-│   │   ├── admin/          # Admin pages
-│   │   └── ...             # Other pages
-│   ├── components/          # React components
-│   ├── lib/                # Utilities & auth
-│   ├── hooks/              # Custom React hooks
-│   └── types/              # TypeScript types
-├── prisma/
-│   ├── schema.prisma       # Database schema
-│   └── dev.db             # SQLite database
-├── public/                 # Static assets
-└── package.json
-```
-
-## 🔑 Environment Variables
-
-Create a `.env` file:
-
-```env
-DATABASE_URL="file:./prisma/dev.db"
-ADMIN_USERNAME="admin"
-ADMIN_EMAIL="admin@movesbook.com"
-ADMIN_PASSWORD_HASH="your_bcrypt_hash_here"
-```
-
-Generate admin password hash:
-```bash
-node hash-admin-password.js
-```
-
-## 🗄️ Database
-
-### Setup
-```bash
-# Generate Prisma client
-npx prisma generate
-
-# Push schema to database
-npx prisma db push
-
-# View database
-npx prisma studio
-```
-
-### User Migration
-To migrate users from movesbook.net:
-```bash
-node migrate-users.js
-```
-
-## 🔐 Security Features
-
-- ✅ **bcrypt password hashing** (12 rounds)
-- ✅ **JWT tokens** with RSA-256 signing
-- ✅ **No plain text passwords**
-- ✅ **Environment variable configuration**
-- ✅ **Auto password upgrade** (SHA1 → bcrypt)
-- ✅ **Secure authentication flow**
-
-## 🎨 Features
-
-- ✅ **Transparent login modals** with glass morphism
-- ✅ **Email or username login**
-- ✅ **Admin panel** with dedicated authentication
-- ✅ **User type management** (Athlete, Coach, Team, Club)
-- ✅ **Workout planning & tracking**
-- ✅ **Mobile responsive design**
-- ✅ **Modern UI/UX**
-
-## 📦 Scripts
-
-```bash
-npm run dev          # Development server
-npm run build        # Production build
-npm run start        # Start production server
-npm run lint         # Run ESLint
-npm run db:push      # Push schema to database
-npm run db:studio    # Open Prisma Studio
-```
-
-## 🛠️ Utilities
-
-### Admin Tools
-```bash
-node hash-admin-password.js    # Generate admin password hash
-node reset-user-password.js    # Reset user password
-```
-
-### Migration Tools
-```bash
-node migrate-users.js          # Migrate users from movesbook.net
-node generate-keys.js          # Generate RSA key pair
-```
-
-## 🚀 Deployment
-
-### Environment Setup
-
-1. **Generate RSA Keys** (if not already done):
-```bash
-node generate-keys.js
-```
-
-2. **Set Environment Variables**:
-```env
-NODE_ENV=production
-DATABASE_URL=your_production_database_url
-ADMIN_PASSWORD_HASH=your_secure_hash
-```
-
-3. **Build & Deploy**:
-```bash
-npm run build
-npm start
-```
-
-### Recommended Hosting
-- Vercel (recommended for Next.js)
-- AWS (EC2, ECS, Lambda)
-- Google Cloud Platform
-- Azure
-- Railway
-- Digital Ocean
-
-### Database for Production
-- PostgreSQL (recommended)
-- MySQL
-- MongoDB (with Prisma)
-
-Update `prisma/schema.prisma`:
-```prisma
-datasource db {
-  provider = "postgresql"  // Change from sqlite
-  url      = env("DATABASE_URL")
-}
-```
-
-## 📄 License
-
-Copyright © 2025 MovesBook
-
-## 🤝 Support
-
-For issues or questions, contact the development team.
+**Live Demo:** http://217.154.202.41:3000  
+**Tech Stack:** Next.js 14, React, TypeScript, Prisma, MySQL, Tailwind CSS  
+**Role:** Full-Stack Developer  
+**Timeline:** [Your timeline here]
 
 ---
 
-**Version**: 1.0.0  
-**Status**: Production Ready ✅  
-**Last Updated**: November 2025
+## 🎯 Key Features Implemented
+
+### 1. **Multi-Language System (12 Languages)**
+- Dynamic translation management with admin interface
+- Support for: English, French, Italian, German, Spanish, Portuguese, Russian, Hindi, Japanese, Indonesian, Chinese, Arabic
+- Real-time translation via MyMemory API
+- 5,400+ translations across the platform
+- Category-based organization (System, Social, Management)
+
+### 2. **Advanced Admin Dashboard**
+- User management (1,600+ users)
+- Translation editor with search, filter, and bulk operations
+- Soft-delete and restore functionality with Super Admin authentication
+- Real-time preview of changes
+- Export/Import capabilities
+
+### 3. **Workout Planning System**
+- Hierarchical structure: Period → Day → Session → Moveframe → Movelap → Microlap
+- Drag-and-drop reordering
+- Template creation and sharing
+- Multi-sport support
+- Progress tracking and statistics
+
+### 4. **Customizable UI**
+- Theme switching (Light/Dark/Auto)
+- Custom color schemes with live preview
+- Adjustable layouts and display modes
+- Saved preferences per user
+- Responsive design for all devices
+
+### 5. **Role-Based Access Control**
+- Athletes: Track personal workouts
+- Coaches: Assign workouts, manage athletes
+- Clubs: Member management, group training
+- Teams: Collaborative planning
+- Admins: Platform-wide configuration
+
+### 6. **Database Architecture**
+- Prisma ORM with MySQL
+- 440 tables managing complex relationships
+- Efficient query optimization
+- Migration from legacy system (SQLite → MySQL)
+- Data integrity with foreign key constraints
+
+---
+
+## 💻 Technical Highlights
+
+### **Frontend**
+- **Next.js 14** (App Router)
+- **TypeScript** for type safety
+- **Tailwind CSS** for styling
+- **React Context** for state management
+- **Server Components** for performance
+
+### **Backend**
+- **Next.js API Routes**
+- **Prisma ORM** for database access
+- **JWT Authentication**
+- **bcrypt** for password hashing
+- **Raw SQL** for complex queries
+
+### **DevOps**
+- **PM2** process management
+- **Ubuntu Server** deployment
+- **Git** version control
+- **XAMPP** for local development
+
+---
+
+## 🎨 UI/UX Features
+
+### **Color Customization**
+- 20+ customizable color properties
+- Contrast ratio validation
+- Save/Export/Import color schemes
+- Real-time preview
+
+### **Internationalization**
+- RTL support for Arabic
+- Date/time localization
+- Number formatting
+- Currency handling
+
+### **Responsive Design**
+- Mobile-first approach
+- Tablet and desktop optimized
+- Touch-friendly interfaces
+- Keyboard shortcuts
+
+---
+
+## 🚀 Performance Optimizations
+
+- **Static Site Generation** for 92 pages
+- **Dynamic imports** for code splitting
+- **Image optimization** with Next.js Image
+- **Database query optimization**
+- **Caching strategies**
+- **Lazy loading** for components
+
+---
+
+## 📊 Project Statistics
+
+- **Lines of Code:** 50,000+
+- **React Components:** 150+
+- **API Endpoints:** 70+
+- **Database Tables:** 440
+- **Supported Languages:** 12
+- **User Base:** 1,600+ migrated users
+- **Build Size:** 87.3 KB (shared JS)
+
+---
+
+## 🛠️ Development Process
+
+### **Phase 1: Planning & Architecture**
+- Database schema design
+- API structure planning
+- Component hierarchy mapping
+
+### **Phase 2: Core Features**
+- Authentication system
+- User management
+- Basic CRUD operations
+
+### **Phase 3: Advanced Features**
+- Workout planning system
+- Translation management
+- Customization options
+
+### **Phase 4: Migration & Deployment**
+- Legacy data migration (416 translation tables)
+- User credential migration
+- Production server setup
+- Performance optimization
+
+---
+
+## 🎯 Challenges Overcome
+
+### **1. Large-Scale Data Migration**
+- **Challenge:** Migrate 440 tables from legacy system
+- **Solution:** Created custom migration scripts, handled encoding issues (UTF-16 → UTF-8), managed foreign key constraints
+
+### **2. Multi-Language Architecture**
+- **Challenge:** Support 12 languages with RTL
+- **Solution:** Built flexible translation system with category-based organization and real-time API integration
+
+### **3. Complex UI Customization**
+- **Challenge:** Allow extensive customization without breaking UX
+- **Solution:** Implemented live preview, validation, and preset management
+
+### **4. Authentication with Legacy System**
+- **Challenge:** Support both SHA1 (legacy) and bcrypt passwords
+- **Solution:** Hybrid authentication with automatic migration on login
+
+---
+
+## 📱 Screenshots
+
+### Admin Dashboard
+![Admin Dashboard](./public/images/dashboard.png)
+
+### Workout Planning
+*Advanced hierarchical workout structure with drag-and-drop*
+
+### Language Management
+*12-language support with translation editor*
+
+### Color Customization
+*Live preview with 20+ customizable properties*
+
+---
+
+## 🔗 Links
+
+- **Live Demo:** http://217.154.202.41:3000
+- **GitHub:** [Your GitHub repo]
+- **Documentation:** [Link to docs]
+
+---
+
+## 💡 Key Learnings
+
+1. **Large-scale database migrations** require careful planning and error handling
+2. **Internationalization** should be built in from the start
+3. **User authentication** needs backward compatibility in legacy system migrations
+4. **Performance optimization** is crucial for complex applications
+5. **Type safety** (TypeScript) prevents bugs in large codebases
+
+---
+
+## 🎓 Skills Demonstrated
+
+- ✅ Full-stack development (Next.js, React, Node.js)
+- ✅ Database design and optimization (Prisma, MySQL)
+- ✅ API development and integration
+- ✅ Authentication and security
+- ✅ Internationalization (i18n)
+- ✅ UI/UX design and customization
+- ✅ DevOps and deployment (PM2, Ubuntu)
+- ✅ Git version control
+- ✅ Problem-solving and debugging
+- ✅ Code architecture and maintainability
+
+---
+
+## 🔮 Future Enhancements
+
+- [ ] Mobile app (React Native)
+- [ ] Real-time collaboration (WebSockets)
+- [ ] AI-powered workout suggestions
+- [ ] Integration with fitness trackers
+- [ ] Social features (comments, likes, sharing)
+- [ ] Video upload and analysis
+- [ ] Nutrition planning module
+
+---
+
+## 📞 Contact
+
+**[Your Name]**  
+Email: [your.email@example.com]  
+LinkedIn: [Your LinkedIn]  
+GitHub: [Your GitHub]  
+Portfolio: [Your Portfolio URL]
+
+---
+
+*This project demonstrates proficiency in modern web development, database management, and deployment practices suitable for production environments.*
 
